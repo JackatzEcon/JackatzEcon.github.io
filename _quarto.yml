@@ -3,7 +3,7 @@ project:
   output-dir: "."
 
 website:
-  title: "YOUR NAME"
+  title: "Jack Katz"
   navbar:
     pinned: true
     left:
@@ -11,6 +11,8 @@ website:
         href: project.qmd
       - text: Blog
         href: blog-listing.qmd
+      - text: Blog
+        href: .qmd
   page-footer: 
     center: "Powered with GitHub and Quarto<br>© YOUR NAME, 2023"
 
