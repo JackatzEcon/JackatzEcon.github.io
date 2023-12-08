@@ -11,8 +11,8 @@ website:
         href: project.qmd
       - text: Blog
         href: blog-listing.qmd
-      - text: Blog
-        href: .qmd
+      - text: index
+        href: index.qmd
   page-footer: 
     center: "Powered with GitHub and Quarto<br>© YOUR NAME, 2023"
 
