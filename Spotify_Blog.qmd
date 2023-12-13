@@ -3,7 +3,6 @@ title: "Spotify Artist Dataset"
 editor: visual
 about: 
   template: solana
-  image: BlogPosts/Spotify_Blog_files/Drake.png
 ---
 
 ```{r}
