@@ -1,6 +1,9 @@
 ---
 title: "Spotify Artist Dataset"
 editor: visual
+about: 
+  template: jolla
+  image: BlogPosts/Spotify_Blog_files/Drake.png
 ---
 
 ```{r}
@@ -73,4 +76,3 @@ ggplot(data = answer)+
   color = Name_and_Track))+
 ylab("Song Occurences")
 ```
-
