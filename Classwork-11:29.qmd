@@ -16,5 +16,3 @@ table4a %>%
                names_to = "year",
                values_to = "cases")
 ```
-
-

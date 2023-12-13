@@ -9,7 +9,7 @@ about:
   links:
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/jack-katz-0199771b8/ 
     - icon: instagram
       text: Instagram
       href: https://instagram.com
@@ -28,7 +28,7 @@ Jack Katz majors in Economics at SUNY Geneseo. When not working on data analytic
 
 ## Education
 
-State University of New York at Geneseo \| Geneseo, NY <br> B.S. in Data Analytics \| Aug 2022 - May 2026 <br> Minor in Business Administration
+State University of New York at Geneseo \| Geneseo, NY <br> B.S. in Data Analytics \| Aug 2020 - May 2024 <br> Major in Business Administration
 
 ## Experience
 
