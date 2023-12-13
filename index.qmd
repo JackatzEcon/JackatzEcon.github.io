@@ -2,7 +2,7 @@
 title: "Jack Katz"
 about:
   template: jolla  # jolla  trestles  solana  marquee  broadside
-  image: /Users/jackkatz/Downloads/IMG_3726.png
+  image: IMG_3726.png 
   image-width: 15em
   image-shape: round # rectangle  round  rounded
   
