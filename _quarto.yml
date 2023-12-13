@@ -13,8 +13,6 @@ website:
         href: blog-listing.qmd
       - text: index
         href: index.qmd
-      - text: Classwork
-        href: Class_Notes_12-8.qmd
   page-footer: 
     center: "Powered with GitHub and Quarto<br>© YOUR NAME, 2023"
 
