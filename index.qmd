@@ -10,26 +10,23 @@ about:
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/jack-katz-0199771b8/ 
-    - icon: instagram
-      text: Instagram
-      href: https://instagram.com
     - icon: github
       text: GitHub
-      href: https://github.com
+      href: https://github.com/JackatzEcon/JackatzEcon.github.io
     - icon: file-earmark-pdf
       text: Resumé
-      href: https://GITHUB_USERNAME.github.io/resume-example.pdf
+      href: /Users/jackkatz/Desktop/JackatzEcon.github.io/Jack.Katz.Resume.pdf
     - icon: mailbox
       text: Email
-      href: mailto:YOUR_EMAIL@geneseo.edu
+      href: mailto:jrk17@geneseo.edu
 ---
 
-Jack Katz majors in Economics at SUNY Geneseo. When not working on data analytics, Finley enjoys spending time unicycling and playing with her pet iguana.
+Jack Katz majors in Economics at SUNY Geneseo. When not doing school work, Jack enjoys watching movies, going hiking, and making soups. 
 
 ## Education
 
-State University of New York at Geneseo \| Geneseo, NY <br> B.S. in Data Analytics \| Aug 2020 - May 2024 <br> Major in Business Administration
+State University of New York at Geneseo \| Geneseo, NY <br> B.A. in Economics \| Aug 2020 - May 2024 <br> Minor in English Literature
 
 ## Experience
 
-Starbucks Analytics \| Data Analyst Intern \| May 2024 - Aug 2024
+SUNY Geneseo Federal Reserve Challenge Team Member \| June 2023 - Current 
