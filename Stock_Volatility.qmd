@@ -2,6 +2,7 @@
 title: "Stock Volatility"
 editor: visual
 ---
+
 ```{r}
 #loading packages
 library(tidyverse)
@@ -32,7 +33,8 @@ Stock_data_clean <- Stock_data %>%
 head(Stock_data_clean, n = 10)
 
 ```
-This code removes the dollar signs from the original dataset so that the prices can be analyzed as numeric variables. 
+
+This code removes the dollar signs from the original dataset so that the prices can be analyzed as numeric variables.
 
 ## Calculating Volatility
 
@@ -65,14 +67,5 @@ ggplot(Historical_Volatility,
   theme_economist_white()
 
 ```
-From here we can now see how the volatility changes. Other than CSCO and SBUX the collection of stocks has an increase in volatility over time. The increase happens for most companies around 2020. According to the graphs the most volaitle companies are NFLX, TSLA, and META. 
 
-
-
-
-
-
-
-
-
-
+From here we can now see how the volatility changes. Other than CSCO and SBUX the collection of stocks has an increase in volatility over time. The increase happens for most companies around 2020. According to the graphs the most volaitle companies are NFLX, TSLA, and META.
