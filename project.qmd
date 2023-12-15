@@ -2,7 +2,7 @@
 title: DANL Project
 subtitle: "Data-Driven Mastery: Unlocking Business Potential"
 author: 
-  - Name 1
+  - Jack Katz 1
   - Name 2
   - Name 3
   - Name 4
