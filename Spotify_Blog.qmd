@@ -4,6 +4,8 @@ editor: visual
 about: 
   template: jolla
   image: BlogPosts/Spotify_Blog_files/Drake.png
+  image-shape: round
+  image-width: 15em 
 ---
 
 ```{r}
