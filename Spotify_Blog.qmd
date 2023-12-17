@@ -3,7 +3,7 @@ title: "Spotify Artist Dataset"
 editor: visual
 about: 
   template: jolla
-  image: BlogPosts/Spotify_Blog_files/Drake.png
+  image: Drake.png
 ---
 
 ```{r}
