@@ -183,6 +183,56 @@ ggplot(stocks, aes(y = PercentageChange, x = log10(Volume))) +
 
 It appears that for all companies, any correlation between volume and change in price is negligible Tesla has the highest positive correlation, while Microsoft has the highest negative correlation.
 
+```{r}
+# Different graph --------------------------------------------------------------
+
+correlation_by_group <- stocks %>%
+  group_by(Company) %>%
+  summarise(correlation = cor(PercentageChange, Volume))
+
+ggplot(correlation_by_group, aes(x=Company, y=correlation))+
+  geom_col()+
+  labs(title= "How strongly does Volume and Percentage Change in Price Correlate?")
+
+```
+It appears that for all companies, any correlation between volume and change in price is negligible Tesla has the highest positive correlation, while Microsoft has the highest negative correlation.
+
+# Which Stocks, If Any, Are Correlated?
+```{r}
+stocks <- stocks %>% 
+  mutate(Open=as.numeric(str_replace_all(Open, "\\$","")), 
+         High=as.numeric(str_replace_all(High, "\\$","")), 
+         Close=as.numeric(str_replace_all(`Close/Last`, "\\$","")),
+         Low=as.numeric(str_replace_all(Low, "\\$","")), 
+         Date=str_replace_all(Date, "\\/", "-"))%>% 
+  mutate(Change=Close-Open) %>% 
+  mutate(PercentageChange = ((Close - Open) / Open) * 100)
+
+stock <- stocks %>% 
+  select(Company|PercentageChange|Date) %>% 
+  pivot_wider(names_from = "Company", values_from = "PercentageChange")
+
+
+correlation_matrix <- cor(stock[, sapply(stock, is.numeric)], use = "pairwise.complete.obs")
+
+print(correlation_matrix)
+
+```
+This code makes a list of the highly correlated stocks.
+
+```{r}
+threshold <- 0.6
+
+high_correlation_pairs <- subset(as.data.frame(which(correlation_matrix > threshold, arr.ind = TRUE)))
+
+high_correlation_pairs
+```
+
+If more than one stock has a correlation to one another, that means that they share the same volatility and their values increase and decrease together.
+
+
+
+
 # Conclusion
 
-From our analysis we would recommend more volatile stocks for a short term investor and less volatile stocks for a long-term investor. From both of our metrics for volatility, MAD and SD, the most volatile stocks are Tesla, Netflix, Microsoft, and Qualcomm. This can be due to a number of factors. For example Tesla has a sporadic CEO whose actions can lead to big changes in stock price. Also for Qualcomm, which is primarily a microchip company, the current international climate regarding microchips is very controversial. Constant policy regarding pricing and trade have made microchip companies stock prices very volatile. Our last metric was elasticity of price compared to volume. We were not able to make any statistically significant conclusions from this data. The change in volume does not appear to have any significant effect on the stock's price.
+From our analysis we would recommend more volatile stocks for a short term investor and less volatile stocks for a long-term investor. From both of our metrics for volatility, MAD and SD, the most volatile stocks are Tesla, Netflix, Microsoft, and Qualcomm. This can be due to a number of factors. For example Tesla has a sporadic CEO whose actions can lead to big changes in stock price. Also for Qualcomm, which is primarily a microchip company, the current international climate regarding microchips is very controversial. Constant policy regarding pricing and trade have made microchip companies stock prices very volatile. Our last metric was elasticity of price compared to volume. We were not able to make any statistically significant conclusions from this data. The change in volume does not appear to have any significant effect on the stock's price. Stocks that are highly correlated with each other such as Amazon and Netflix. This tells us that both move similarly in price changes so they should be reccomended together.  

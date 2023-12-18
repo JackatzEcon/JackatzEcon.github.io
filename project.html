@@ -159,7 +159,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#which-stocks-are-short-term-investments-vs-long-term-investments" id="toc-which-stocks-are-short-term-investments-vs-long-term-investments" class="nav-link" data-scroll-target="#which-stocks-are-short-term-investments-vs-long-term-investments"><span class="header-section-number">4</span> Which Stocks Are Short Term Investments vs Long Term Investments?</a></li>
   <li><a href="#pvt-price-volume-trend-indicator.-in-price-in-volume" id="toc-pvt-price-volume-trend-indicator.-in-price-in-volume" class="nav-link" data-scroll-target="#pvt-price-volume-trend-indicator.-in-price-in-volume"><span class="header-section-number">5</span> PVT = Price Volume Trend Indicator. ( ∆ in Price / ∆ in Volume )</a></li>
   <li><a href="#how-does-higher-volume-correlate-with-an-increase-in-price-for-the-different-companies" id="toc-how-does-higher-volume-correlate-with-an-increase-in-price-for-the-different-companies" class="nav-link" data-scroll-target="#how-does-higher-volume-correlate-with-an-increase-in-price-for-the-different-companies"><span class="header-section-number">6</span> How does higher volume correlate with an increase in price for the different companies?</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7</span> Conclusion</a></li>
+  <li><a href="#which-stocks-if-any-are-correlated" id="toc-which-stocks-if-any-are-correlated" class="nav-link" data-scroll-target="#which-stocks-if-any-are-correlated"><span class="header-section-number">7</span> Which Stocks, If Any, Are Correlated?</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">8</span> Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -540,10 +541,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>It appears that for all companies, any correlation between volume and change in price is negligible Tesla has the highest positive correlation, while Microsoft has the highest negative correlation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Different graph --------------------------------------------------------------</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>correlation_by_group <span class="ot">&lt;-</span> stocks <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Company) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">correlation =</span> <span class="fu">cor</span>(PercentageChange, Volume))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(correlation_by_group, <span class="fu">aes</span>(<span class="at">x=</span>Company, <span class="at">y=</span>correlation))<span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span> <span class="st">"How strongly does Volume and Percentage Change in Price Correlate?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="project_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="864"></p>
+</div>
+</div>
+<p>It appears that for all companies, any correlation between volume and change in price is negligible Tesla has the highest positive correlation, while Microsoft has the highest negative correlation.</p>
 </section>
-<section id="conclusion" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Conclusion</h1>
-<p>From our analysis we would recommend more volatile stocks for a short term investor and less volatile stocks for a long-term investor. From both of our metrics for volatility, MAD and SD, the most volatile stocks are Tesla, Netflix, Microsoft, and Qualcomm. This can be due to a number of factors. For example Tesla has a sporadic CEO whose actions can lead to big changes in stock price. Also for Qualcomm, which is primarily a microchip company, the current international climate regarding microchips is very controversial. Constant policy regarding pricing and trade have made microchip companies stock prices very volatile. Our last metric was elasticity of price compared to volume. We were not able to make any statistically significant conclusions from this data. The change in volume does not appear to have any significant effect on the stock’s price.</p>
+<section id="which-stocks-if-any-are-correlated" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Which Stocks, If Any, Are Correlated?</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stocks <span class="ot">&lt;-</span> stocks <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Open=</span><span class="fu">as.numeric</span>(<span class="fu">str_replace_all</span>(Open, <span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>,<span class="st">""</span>)), </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">High=</span><span class="fu">as.numeric</span>(<span class="fu">str_replace_all</span>(High, <span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>,<span class="st">""</span>)), </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Close=</span><span class="fu">as.numeric</span>(<span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Close/Last</span><span class="st">`</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>,<span class="st">""</span>)),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">Low=</span><span class="fu">as.numeric</span>(<span class="fu">str_replace_all</span>(Low, <span class="st">"</span><span class="sc">\\</span><span class="st">$"</span>,<span class="st">""</span>)), </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Date=</span><span class="fu">str_replace_all</span>(Date, <span class="st">"</span><span class="sc">\\</span><span class="st">/"</span>, <span class="st">"-"</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Change=</span>Close<span class="sc">-</span>Open) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PercentageChange =</span> ((Close <span class="sc">-</span> Open) <span class="sc">/</span> Open) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>stock <span class="ot">&lt;-</span> stocks <span class="sc">%&gt;%</span> </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Company<span class="sc">|</span>PercentageChange<span class="sc">|</span>Date) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"Company"</span>, <span class="at">values_from =</span> <span class="st">"PercentageChange"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>correlation_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(stock[, <span class="fu">sapply</span>(stock, is.numeric)], <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(correlation_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          AAPL      SBUX      MSFT      CSCO      QCOM      META      AMZN
+AAPL 1.0000000 0.4427183 0.6482075 0.5202857 0.5021974 0.5420176 0.5908826
+SBUX 0.4427183 1.0000000 0.4903198 0.4391213 0.3825639 0.4330588 0.4458214
+MSFT 0.6482075 0.4903198 1.0000000 0.5814310 0.5113963 0.5654087 0.6334317
+CSCO 0.5202857 0.4391213 0.5814310 1.0000000 0.4400256 0.4029900 0.4331751
+QCOM 0.5021974 0.3825639 0.5113963 0.4400256 1.0000000 0.3986094 0.4362186
+META 0.5420176 0.4330588 0.5654087 0.4029900 0.3986094 1.0000000 0.6164006
+AMZN 0.5908826 0.4458214 0.6334317 0.4331751 0.4362186 0.6164006 1.0000000
+TSLA 0.4018530 0.2822298 0.3703078 0.2244001 0.3215428 0.4067864 0.4282136
+AMD  0.4207576 0.2578892 0.4304426 0.3347407 0.3970907 0.3926572 0.4385932
+NFLX 0.4641878 0.3737994 0.4963678 0.3666976 0.3630590 0.5582032 0.5806080
+          TSLA       AMD      NFLX
+AAPL 0.4018530 0.4207576 0.4641878
+SBUX 0.2822298 0.2578892 0.3737994
+MSFT 0.3703078 0.4304426 0.4963678
+CSCO 0.2244001 0.3347407 0.3666976
+QCOM 0.3215428 0.3970907 0.3630590
+META 0.4067864 0.3926572 0.5582032
+AMZN 0.4282136 0.4385932 0.5806080
+TSLA 1.0000000 0.3558701 0.3953805
+AMD  0.3558701 1.0000000 0.3607371
+NFLX 0.3953805 0.3607371 1.0000000</code></pre>
+</div>
+</div>
+<p>This code makes a list of the highly correlated stocks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>high_correlation_pairs <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">as.data.frame</span>(<span class="fu">which</span>(correlation_matrix <span class="sc">&gt;</span> threshold, <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>high_correlation_pairs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       row col
+AAPL     1   1
+MSFT     3   1
+SBUX     2   2
+AAPL.1   1   3
+MSFT.1   3   3
+AMZN     7   3
+CSCO     4   4
+QCOM     5   5
+META     6   6
+AMZN.1   7   6
+MSFT.2   3   7
+META.1   6   7
+AMZN.2   7   7
+TSLA     8   8
+AMD      9   9
+NFLX    10  10</code></pre>
+</div>
+</div>
+<p>If more than one stock has a correlation to one another, that means that they share the same volatility and their values increase and decrease together.</p>
+</section>
+<section id="conclusion" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Conclusion</h1>
+<p>From our analysis we would recommend more volatile stocks for a short term investor and less volatile stocks for a long-term investor. From both of our metrics for volatility, MAD and SD, the most volatile stocks are Tesla, Netflix, Microsoft, and Qualcomm. This can be due to a number of factors. For example Tesla has a sporadic CEO whose actions can lead to big changes in stock price. Also for Qualcomm, which is primarily a microchip company, the current international climate regarding microchips is very controversial. Constant policy regarding pricing and trade have made microchip companies stock prices very volatile. Our last metric was elasticity of price compared to volume. We were not able to make any statistically significant conclusions from this data. The change in volume does not appear to have any significant effect on the stock’s price. Stocks that are highly correlated with each other such as Amazon and Netflix. This tells us that both move similarly in price changes so they should be reccomended together.</p>
 
 
 </section>
