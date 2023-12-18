@@ -11,10 +11,13 @@ Stock_data <- read.csv("/Users/jackkatz/Downloads/data.csv")
 Stock_data_clean <- Stock_data %>% 
   mutate(Close.Last.Numeric = gsub("\\$","", Stock_data$Close.Last),
          Open.Numeric = gsub("\\$","", Stock_data$Open),
-         Open.Numeric = gsub("\\$","", Stock_data$Open),
          High.Numeric = gsub("\\$","", Stock_data$High),
          Low.Numeric = gsub("\\$","", Stock_data$Low)) %>% 
-  select(Company, Date, Volume, Close.Last.Numeric:Low.Numeric)
+  mutate(Close_Last = as.numeric(Close.Last.Numeric),
+         Open_Numeric = as.numeric(Open.Numeric),
+         High_Numeric = as.numeric(High.Numeric),
+         Low_Numeric  = as.numeric(Low.Numeric)) %>% 
+  select(Company, Date, Volume, Close_Last:Low_Numeric)
 
 #Creating new variables for analysis, Separating by month day and year will make 
 #it easier to group and filter observations by year. 
@@ -33,11 +36,30 @@ Historical_Volatility <- Volatility_analysis %>%
 #Now that the data has been cleaned and analyzed we can show our findings using 
 #ggplot
 
-ggplot(Historical_Volatility,
-       mapping = aes(x = Year,
-                     y = Volatility),
-       grouping = 1)+
-  geom_point()+
-  facet_wrap( . ~Company)+
+Years <- c(2013, 2015, 2017, 2019, 2021, 2023)
+
+Volatility <- ggplot(Historical_Volatility,
+       mapping = aes(x = as.numeric(Year),
+                     y = Volatility
+                     )) +
+  geom_point(color = "blue") +
+  geom_line(color = "green") +
+  facet_wrap( . ~Company) +
+  ggtitle("Stock Price Volatility from 2013-2023", subtitle = "In dollars") +
+  labs(x = "Year") +
   theme_economist_white()
+
+Volatility + scale_x_continuous(breaks = scales::breaks_width(2))
+levels(Stock_data$Company)
+
+
+unique(Stock_data$Company)
+
+
+
+skim(Stock_data_clean)
+
+summarise(Stock_data)
+
+
 
