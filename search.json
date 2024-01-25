@@ -411,5 +411,12 @@
     "title": "DANL-200 Final Project",
     "section": "2.1 Loading in Data",
     "text": "2.1 Loading in Data\n\nStock_data &lt;- read.csv(\"/Users/jackkatz/Downloads/data.csv\")\n\nhead(Stock_data)\n\n  Company       Date Close.Last   Volume    Open      High      Low\n1    AAPL 07/17/2023    $193.99 50520160 $191.90   $194.32  $191.81\n2    AAPL 07/14/2023    $190.69 41616240 $190.23 $191.1799  $189.63\n3    AAPL 07/13/2023    $190.54 41342340 $190.50   $191.19  $189.78\n4    AAPL 07-12-2023    $189.77 60750250 $189.68   $191.70  $188.47\n5    AAPL 07-11-2023    $188.08 46638120 $189.16   $189.30  $186.60\n6    AAPL 07-10-2023    $188.61 59922160 $189.26   $189.99 $187.035"
+  },
+  {
+    "objectID": "Directed_Study.html",
+    "href": "Directed_Study.html",
+    "title": "Directed Study",
+    "section": "",
+    "text": "Loading in Packages\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ipumsr)\n\n\n\nLoading in data\nThis data set is from the Integrated Public Use Micro data website which provides micro data from United States surveys for research purposes. Below is is code I wrote to clean and analyze the data for undergraduate research I am currently working on.\n\nddi &lt;- read_ipums_ddi(\"usa_00007.xml\")\ndata &lt;- read_ipums_micro(ddi)\n\nUse of data from IPUMS USA is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.\n\n\n\n\nCleaning Data\n\n\nCreating New Variables\n\n\nDescriptive Statistics"
   }
 ]

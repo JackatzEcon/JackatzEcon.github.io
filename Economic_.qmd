@@ -11,7 +11,7 @@ $$
 \frac{k}{2}q^2
 $$
 
-## External Damage function 
+## External Damage function
 
 $$
 \frac{d}{2}q^2
@@ -25,7 +25,7 @@ $$
 
 # Task 1
 
-### Find the socially optimal level of output for a monopolist firm 
+### Find the socially optimal level of output for a monopolist firm
 
 $$
 max_q\  SW = \int_{0}^{q} (1-\theta)d\theta - \frac{k}{2}q^2 - \frac{d}{2}q^2 \\
@@ -55,7 +55,7 @@ max_q\  SW = U + \pi - D \\
 = Y + q-\frac{1}{2}q^2-\frac{k}{2}q^2-\frac{d}{2}q^2
 $$
 
-## F.O.C. 2 
+## F.O.C. 2
 
 $$
 \frac{dSW}{dq} = 1-q-kq-dq =0
@@ -85,7 +85,7 @@ $$
 \frac{1-\tau}{2+k} = q^m
 $$
 
-### Competitive firm optimal level with tax 
+### Competitive firm optimal level with tax
 
 $$
 max_q \ \pi^c = pq-\frac{k}{2}q^2-\tau q\
@@ -119,7 +119,7 @@ $$
 
 Now that we have derived the supply and demand function we can set them equal to each other to find the market equilibrium quantity of q.
 
-#### Market Equilibrium 
+#### Market Equilibrium
 
 $$
 kq+\tau = 1-q
@@ -135,11 +135,11 @@ $$
 q^c > q^m 
 $$
 
-# Task 3 
+# Task 3
 
 Now that we know the optimal level of q for each market structure we can find the optimal tax level to induce each firm to produce at the socially optimal level.
 
-### Optimal tax rate for the monopolistic firm 
+### Optimal tax rate for the monopolistic firm
 
 $$
 q^m = q^o
@@ -161,7 +161,7 @@ $$
 \tau^m = \frac{d-1}{1+k+d}
 $$
 
-### Optimal tax rate for the competitive firm 
+### Optimal tax rate for the competitive firm
 
 $$
 q^c = q^o
