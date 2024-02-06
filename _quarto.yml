@@ -11,13 +11,19 @@ website:
         href: project.qmd
       - text: Blog
         href: blog-listing.qmd
+      - text: Python Data Analysis
+        menu: 
+          - basic_python_intro_(2).ipynb
+          - danl-210-quarto-py-only.qmd
+          - danl-210-quarto-reticualte.qmd
+        
   page-footer: 
-    center: "Powered with GitHub and Quarto<br>© JACK KATZ, 2023"
+    center: "Powered with GitHub and Quarto<br>© JACK KATZ, 2024"
 
 format:
   html:
     theme: 
-      light: flatly
+      light: Morph
       dark: darkly
     mainfont: system-ui; 
     highlight-style: atom-one

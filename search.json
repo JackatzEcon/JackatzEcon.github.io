@@ -1,31 +1,297 @@
 [
   {
-    "objectID": "project.html",
-    "href": "project.html",
-    "title": "DANL-200 Final Project",
+    "objectID": "Stock_Volatility.html",
+    "href": "Stock_Volatility.html",
+    "title": "Stock Volatility",
     "section": "",
-    "text": "About this project:\nThe purpose of our project is to analyze a basket of ten stocks from the years 2013-2023. Through our analysis we make a stock recommendation for two different types of investors: A long-term and Short-term investor. We do this by analyzing changes in stock price, volatility and correlation between the different stock price movements over time."
+    "text": "#loading packages\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(tidyselect)\nlibrary(skimr)\nlibrary(ggthemes)\n# loading data\nStock_data &lt;- read.csv(\"/Users/jackkatz/Downloads/data.csv\")"
   },
   {
-    "objectID": "project.html#summary-statistics",
-    "href": "project.html#summary-statistics",
-    "title": "DANL-200 Final Project",
-    "section": "2.2 Summary Statistics",
-    "text": "2.2 Summary Statistics\n\nStock_data_clean &lt;- Stock_data %&gt;% \n  mutate(Close.Last.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Close.Last),\n         Open.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Open),\n         High.Numeric = gsub(\"\\\\$\",\"\", Stock_data$High),\n         Low.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Low)) %&gt;% \n  mutate(Close_Last = as.numeric(Close.Last.Numeric),\n         Open_Numeric = as.numeric(Open.Numeric),\n         High_Numeric = as.numeric(High.Numeric),\n         Low_Numeric  = as.numeric(Low.Numeric)) %&gt;% \n  select(Company, Date, Volume, Close_Last:Low_Numeric)\n\nskim(Stock_data_clean)\n\n\nData summary\n\n\nName\nStock_data_clean\n\n\nNumber of rows\n25160\n\n\nNumber of columns\n7\n\n\n_______________________\n\n\n\nColumn type frequency:\n\n\n\ncharacter\n2\n\n\nnumeric\n5\n\n\n________________________\n\n\n\nGroup variables\nNone\n\n\n\nVariable type: character\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmin\nmax\nempty\nn_unique\nwhitespace\n\n\n\n\nCompany\n0\n1\n3\n4\n0\n10\n0\n\n\nDate\n0\n1\n10\n10\n0\n2516\n0\n\n\n\nVariable type: numeric\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmean\nsd\np0\np25\np50\np75\np100\nhist\n\n\n\n\nVolume\n0\n1\n51317642.69\n63991428.71\n1143952.00\n12003942.50\n26720830.00\n68572694.00\n1.065209e+09\n▇▁▁▁▁\n\n\nClose_Last\n0\n1\n102.46\n101.99\n1.62\n36.57\n65.68\n134.24\n6.916900e+02\n▇▂▁▁▁\n\n\nOpen_Numeric\n0\n1\n102.43\n102.00\n1.62\n36.51\n65.65\n134.32\n6.923500e+02\n▇▂▁▁▁\n\n\nHigh_Numeric\n0\n1\n103.83\n103.53\n1.69\n36.89\n66.49\n136.23\n7.009900e+02\n▇▂▁▁▁\n\n\nLow_Numeric\n0\n1\n101.01\n100.40\n1.61\n36.13\n64.92\n132.66\n6.860900e+02\n▇▂▁▁▁"
+    "objectID": "Stock_Volatility.html#calculating-volatility",
+    "href": "Stock_Volatility.html#calculating-volatility",
+    "title": "Stock Volatility",
+    "section": "Calculating Volatility",
+    "text": "Calculating Volatility\nBy separating the month and day from the year and creating a new variable, we can group the data set by Year and Company and find the standard deviations from Close.Last.Numeric.\n\nVolatility_analysis &lt;- Stock_data_clean %&gt;% \n  separate(Date, into = c(\"Month/Day\",\"Year\"), sep = 6 )\n\nhead(Volatility_analysis, n = 10)\n\n   Company Month/Day Year   Volume Close.Last.Numeric Open.Numeric High.Numeric\n1     AAPL    07/17/ 2023 50520160             193.99       191.90       194.32\n2     AAPL    07/14/ 2023 41616240             190.69       190.23     191.1799\n3     AAPL    07/13/ 2023 41342340             190.54       190.50       191.19\n4     AAPL    07-12- 2023 60750250             189.77       189.68       191.70\n5     AAPL    07-11- 2023 46638120             188.08       189.16       189.30\n6     AAPL    07-10- 2023 59922160             188.61       189.26       189.99\n7     AAPL    07-07- 2023 46815000             190.68       191.41       192.67\n8     AAPL    07-06- 2023 45156010             191.81       189.84       192.02\n9     AAPL    07-05- 2023 46920260             191.33      191.565       192.98\n10    AAPL    07-03- 2023 31346600             192.46       193.78       193.88\n   Low.Numeric\n1       191.81\n2       189.63\n3       189.78\n4       188.47\n5       186.60\n6      187.035\n7       190.24\n8       189.20\n9       190.62\n10      191.76\n\n\n\nHistorical_Volatility &lt;- Volatility_analysis %&gt;% \n  group_by(Company, Year) %&gt;% \n  summarise(Volatility = sd(Close.Last.Numeric))\n\n`summarise()` has grouped output by 'Company'. You can override using the\n`.groups` argument.\n\nhead(Historical_Volatility, n = 10)\n\n# A tibble: 10 × 3\n# Groups:   Company [1]\n   Company Year  Volatility\n   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;\n 1 AAPL    2013        1.33\n 2 AAPL    2014        3.34\n 3 AAPL    2015        1.92\n 4 AAPL    2016        1.91\n 5 AAPL    2017        3.66\n 6 AAPL    2018        5.15\n 7 AAPL    2019        8.63\n 8 AAPL    2020       21.8 \n 9 AAPL    2021       14.7 \n10 AAPL    2022       13.1 \n\n\nFrom this dataset we then used ggplot to show each companies volatility from 2013-2023\n\nggplot(Historical_Volatility,\n       mapping = aes(x = Year,\n                     y = Volatility),\n       grouping = 1)+\n  geom_point()+\n  facet_wrap( . ~Company)+\n  theme_economist_white()\n\n\n\n\nFrom here we can now see how the volatility changes. Other than CSCO and SBUX the collection of stocks has an increase in volatility over time. The increase happens for most companies around 2020. According to the graphs the most volaitle companies are NFLX, TSLA, and META."
   },
   {
-    "objectID": "project.html#mpg-and-a-type-of-cars",
-    "href": "project.html#mpg-and-a-type-of-cars",
-    "title": "DANL-200 Final Project",
-    "section": "3.1 MPG and a Type of Cars",
-    "text": "3.1 MPG and a Type of Cars\nThe following boxplot shows how the distribution of highway MPG (hwy) varies by a type of cars (class) 🚙 🚚 🚐.\n\nggplot(data = mpg) +\n  geom_boxplot(aes(x = class, y = hwy, fill = class),\n               show.legend = F) +\n  labs(x = \"Class\", y = \"Highway\\nMPG\")"
-  },
-  {
-    "objectID": "blog-listing.html",
-    "href": "blog-listing.html",
-    "title": "DANL200 Homework",
+    "objectID": "danl-210-quarto-reticulate.html",
+    "href": "danl-210-quarto-reticulate.html",
+    "title": "DANL 210: Data Preparation and Management",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n  \n\n\n\n\nSpotify Artist Dataset\n\n\n\n\n\n\n\n\n\n2 min\n\n\n\n\n\n\n  \n\n\n\n\nRestaurant Inspection Data\n\n\n\n\n\n\n\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+    "text": "In Python, variables can store data of different types without explicitly declaring the type.\nFor example:\n\ninteger_variable = 10\nstring_variable = 'Hello'\nfloat_variable = 10.5\n\nfloat_variable\n\n10.5"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#variables-and-data-types",
+    "href": "danl-210-quarto-reticulate.html#variables-and-data-types",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "",
+    "text": "In Python, variables can store data of different types without explicitly declaring the type.\nFor example:\n\ninteger_variable = 10\nstring_variable = 'Hello'\nfloat_variable = 10.5\n\nfloat_variable\n\n10.5"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#control-structures",
+    "href": "danl-210-quarto-reticulate.html#control-structures",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "0.2 Control Structures",
+    "text": "0.2 Control Structures\nPython supports the usual logical conditions from mathematics:\n\n# Equals: a == b\n# Not Equals: a != b\n# Less than: a &lt; b\n# Less than or equal to: a &lt;= b\n# Greater than: a &gt; b\n# Greater than or equal to: a &gt;= b\n\nThese conditions can be used in several ways, most commonly in ‘if statements’ and loops.\n\n# if statement:\nif 5 &gt; 2:\n    print('Five is greater than two!')\n\nFive is greater than two!"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#functions",
+    "href": "danl-210-quarto-reticulate.html#functions",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "0.3 Functions",
+    "text": "0.3 Functions\nA function is a block of code which only runs when it is called.\nYou can pass data, known as parameters, into a function.\nA function can return data as a result.\n\n# Defining a function:\ndef my_function():\n    print('Hello from a function')\n\n# Calling a function:\nmy_function()\n\nHello from a function"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#lists-and-dictionaries",
+    "href": "danl-210-quarto-reticulate.html#lists-and-dictionaries",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "0.4 Lists and Dictionaries",
+    "text": "0.4 Lists and Dictionaries\nA list is a collection which is ordered and changeable.\nA dictionary is a collection which is unordered, changeable and indexed.\n\n# List example:\nmy_list = ['apple', 'banana', 'cherry']\n\n# Dictionary example:\nmy_dict = {'name': 'John', 'age': 36}"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#import-python-libraries",
+    "href": "danl-210-quarto-reticulate.html#import-python-libraries",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.1 Import Python libraries",
+    "text": "1.1 Import Python libraries\n\nimport pandas as pd\n\n\noj = pd.read_csv('https://bcdanl.github.io/data/dominick_oj.csv')\n\n\n\nCode!\noj\n\n\n         sales  price      brand  ad\n0       8256.0   3.87  tropicana   0\n1       6144.0   3.87  tropicana   0\n2       3840.0   3.87  tropicana   0\n3       8000.0   3.87  tropicana   0\n4       8896.0   3.87  tropicana   0\n...        ...    ...        ...  ..\n28942   2944.0   2.00  dominicks   0\n28943   4928.0   1.94  dominicks   0\n28944  13440.0   1.59  dominicks   0\n28945  55680.0   1.49  dominicks   0\n28946   7040.0   1.75  dominicks   0\n\n[28947 rows x 4 columns]\n\n\n\noj.describe()\n\n               sales         price            ad\ncount   28947.000000  28947.000000  28947.000000\nmean    17312.213356      2.282488      0.237261\nstd     27477.660437      0.648001      0.425411\nmin        64.000000      0.520000      0.000000\n25%      4864.000000      1.790000      0.000000\n50%      8384.000000      2.170000      0.000000\n75%     17408.000000      2.730000      0.000000\nmax    716416.000100      3.870000      1.000000"
+  },
+  {
+    "objectID": "danl-210-quarto-reticulate.html#python-r-interaction",
+    "href": "danl-210-quarto-reticulate.html#python-r-interaction",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.2 Python-R Interaction",
+    "text": "1.2 Python-R Interaction\nBelow is using Python’s DataFrame oj to visualize using R’s ggplot\n\nlibrary(tidyverse)\n\n# Access the Python pandas DataFrame\noj &lt;- py$oj\n\n# Plot using ggplot2\nggplot(oj, aes(x = log(sales), y = log(price), \n               color = brand)) +\n  geom_point(alpha = .25) +\n  geom_smooth(method = lm) +\n  theme_minimal()\n\n\n\n\n\n1.2.1 Interactive DataFrame with R’s DT Package\n\n\n\n\n\n\n\nIn *.ipynb on Google Colab, we can use itables or just Google Colab’s default to print DataFrame.\n\n# !pip install itables\nfrom itables import init_notebook_mode, show\ninit_notebook_mode(all_interactive=False)\n\noj = pd.read_csv('https://bcdanl.github.io/data/dominick_oj.csv')\nshow(oj)"
+  },
+  {
+    "objectID": "Class_Notes_12-8.html",
+    "href": "Class_Notes_12-8.html",
+    "title": "Class-Notes_12-8",
+    "section": "",
+    "text": "df1 &lt;- data.frame(id = 1:3, \n                  name = c(\"Alice\", \"Bob\", \"Charlie\")\n                  )\ndf2 &lt;- data.frame(id = 4:6, \n                  name = c(\"Dave\", \"Eve\", \"Frank\")\n                  )\ndf_rbind &lt;- rbind(df1, df2)\ndf_cbind &lt;- cbind(df1, df2) # better to rename id before cbind()"
+  },
+  {
+    "objectID": "Restaurant_Inspection.html",
+    "href": "Restaurant_Inspection.html",
+    "title": "Restaurant Inspection Data",
+    "section": "",
+    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
+  },
+  {
+    "objectID": "Restaurant_Inspection.html#loading-in-data",
+    "href": "Restaurant_Inspection.html#loading-in-data",
+    "title": "Restaurant Inspection Data",
+    "section": "",
+    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
+  },
+  {
+    "objectID": "Restaurant_Inspection.html#creating-descriptive-statistics",
+    "href": "Restaurant_Inspection.html#creating-descriptive-statistics",
+    "title": "Restaurant Inspection Data",
+    "section": "Creating Descriptive Statistics",
+    "text": "Creating Descriptive Statistics\n\nQ1a &lt;- restaurant %&gt;% \n  group_by(GRADE) %&gt;% \n  summarise(SD_value = sd(SCORE),\n            first_quartile = quantile(SCORE, 0.25),\n            median_value = median(SCORE),\n            third_quartile = quantile(SCORE, .75),\n            MAX_value = max(SCORE))\n\n\nRelationship between Grade and Score\nBox plots can show us the relationship between a character variable and a quantitative variable.\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))\n\n\n\n\n###Relationship between grade score and critical flag\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))\n\n\n\n\n\n\nIn this ggplot graph we can see which Cuisine Description has the highest proportion of Grade A rankings\n\nQ1e &lt;- restaurant %&gt;% \n  group_by(`CUISINE DESCRIPTION`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  head(n = 10)\n\nQ1e\n\n# A tibble: 10 × 2\n   `CUISINE DESCRIPTION`    count\n   &lt;chr&gt;                    &lt;int&gt;\n 1 American                  3678\n 2 Coffee/Tea                1414\n 3 Chinese                   1372\n 4 Pizza                     1050\n 5 Italian                    689\n 6 Bakery Products/Desserts   615\n 7 Japanese                   584\n 8 Mexican                    582\n 9 Latin American             544\n10 Donuts                     505\n\n\n\nGrades &lt;- restaurant %&gt;% \n  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))\nGrades\n\n# A tibble: 11,033 × 12\n      CAMIS DBA      BORO  STREET `CUISINE DESCRIPTION` `INSPECTION DATE` ACTION\n      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;             &lt;chr&gt; \n 1 40356018 riviera… Broo… STILL… American              02/01/2022        Viola…\n 2 40357217 wild as… Bronx SOUTH… American              07/28/2021        Viola…\n 3 40359480 1 east … Manh… EAST … American              05/03/2022        Viola…\n 4 40362264 p & s d… Manh… COLUM… American              02/07/2023        Viola…\n 5 40362274 angelik… Manh… WEST … American              02/14/2022        Viola…\n 6 40362432 ho mei … Quee… 37 AV… Chinese               10/25/2022        Viola…\n 7 40363298 cafe me… Manh… 8 AVE… American              09/02/2022        Viola…\n 8 40363920 new gol… Broo… RUTLA… Chinese               02/16/2022        Viola…\n 9 40364305 philade… Broo… 4 AVE… Pizza                 01/23/2023        Viola…\n10 40364347 metropo… Manh… EAST … American              04/12/2022        Viola…\n# ℹ 11,023 more rows\n# ℹ 5 more variables: `VIOLATION CODE` &lt;chr&gt;, `VIOLATION DESCRIPTION` &lt;chr&gt;,\n#   `CRITICAL FLAG` &lt;chr&gt;, SCORE &lt;dbl&gt;, GRADE &lt;chr&gt;\n\n\n\nggplot(data = Grades)+\n  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, \n                         y = after_stat(prop),\n                         group = GRADE,\n                         fill = GRADE))\n\n\n\n\nFrom this ggplot we can see that donuts have the highest proportion of A grades for health.\n\n\nMost popular restaurant type\n\nQ1f &lt;- restaurant %&gt;% \n  group_by(`DBA`) %&gt;% \n  summarise(count = n()) %&gt;%   \n  arrange(desc(count))\n\nQ1f\n\n# A tibble: 13,914 × 2\n   DBA                     count\n   &lt;chr&gt;                   &lt;int&gt;\n 1 dunkin                    402\n 2 starbucks                 286\n 3 mcdonald's                170\n 4 subway                    166\n 5 dunkin', baskin robbins   107\n 6 popeyes                    98\n 7 chipotle mexican grill     91\n 8 burger king                63\n 9 domino's                   60\n10 kennedy fried chicken      52\n# ℹ 13,904 more rows"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Jack Katz",
+    "section": "",
+    "text": "Jack Katz majors in Economics at SUNY Geneseo. When not doing school work, Jack enjoys watching movies, going hiking, and making soups."
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Jack Katz",
+    "section": "Education",
+    "text": "Education\nState University of New York at Geneseo | Geneseo, NY  B.A. in Economics | Aug 2020 - May 2024  Minor in English Literature"
+  },
+  {
+    "objectID": "index.html#experience",
+    "href": "index.html#experience",
+    "title": "Jack Katz",
+    "section": "Experience",
+    "text": "Experience\nSUNY Geneseo Federal Reserve Challenge Team Member | June 2023 - Current"
+  },
+  {
+    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html",
+    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html",
+    "title": "Restaurant Inspection Data",
+    "section": "",
+    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
+  },
+  {
+    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#loading-in-data",
+    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#loading-in-data",
+    "title": "Restaurant Inspection Data",
+    "section": "",
+    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
+  },
+  {
+    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#creating-descriptive-statistics",
+    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#creating-descriptive-statistics",
+    "title": "Restaurant Inspection Data",
+    "section": "Creating Descriptive Statistics",
+    "text": "Creating Descriptive Statistics\n\nQ1a &lt;- restaurant %&gt;% \n  group_by(GRADE) %&gt;% \n  summarise(SD_value = sd(SCORE),\n            first_quartile = quantile(SCORE, 0.25),\n            median_value = median(SCORE),\n            third_quartile = quantile(SCORE, .75),\n            MAX_value = max(SCORE))\n\n\nRelationship between Grade and Score\nBox plots can show us the relationship between a character variable and a quantitative variable.\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))\n\n\n\n\n###Relationship between grade score and critical flag\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))\n\n\n\n\n\n\nIn this ggplot graph we can see which Cuisine Description has the highest proportion of Grade A rankings\n\nQ1e &lt;- restaurant %&gt;% \n  group_by(`CUISINE DESCRIPTION`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  head(n = 10)\n\nQ1e\n\n# A tibble: 10 × 2\n   `CUISINE DESCRIPTION`    count\n   &lt;chr&gt;                    &lt;int&gt;\n 1 American                  3678\n 2 Coffee/Tea                1414\n 3 Chinese                   1372\n 4 Pizza                     1050\n 5 Italian                    689\n 6 Bakery Products/Desserts   615\n 7 Japanese                   584\n 8 Mexican                    582\n 9 Latin American             544\n10 Donuts                     505\n\n\n\nGrades &lt;- restaurant %&gt;% \n  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))\nGrades\n\n# A tibble: 11,033 × 12\n      CAMIS DBA      BORO  STREET `CUISINE DESCRIPTION` `INSPECTION DATE` ACTION\n      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;             &lt;chr&gt; \n 1 40356018 riviera… Broo… STILL… American              02/01/2022        Viola…\n 2 40357217 wild as… Bronx SOUTH… American              07/28/2021        Viola…\n 3 40359480 1 east … Manh… EAST … American              05/03/2022        Viola…\n 4 40362264 p & s d… Manh… COLUM… American              02/07/2023        Viola…\n 5 40362274 angelik… Manh… WEST … American              02/14/2022        Viola…\n 6 40362432 ho mei … Quee… 37 AV… Chinese               10/25/2022        Viola…\n 7 40363298 cafe me… Manh… 8 AVE… American              09/02/2022        Viola…\n 8 40363920 new gol… Broo… RUTLA… Chinese               02/16/2022        Viola…\n 9 40364305 philade… Broo… 4 AVE… Pizza                 01/23/2023        Viola…\n10 40364347 metropo… Manh… EAST … American              04/12/2022        Viola…\n# ℹ 11,023 more rows\n# ℹ 5 more variables: `VIOLATION CODE` &lt;chr&gt;, `VIOLATION DESCRIPTION` &lt;chr&gt;,\n#   `CRITICAL FLAG` &lt;chr&gt;, SCORE &lt;dbl&gt;, GRADE &lt;chr&gt;\n\n\n\nggplot(data = Grades)+\n  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, \n                         y = after_stat(prop),\n                         group = GRADE,\n                         fill = GRADE))\n\n\n\n\nFrom this ggplot we can see that donuts have the highest proportion of A grades for health.\n\n\nMost popular restaurant type\n\nQ1f &lt;- restaurant %&gt;% \n  group_by(`DBA`) %&gt;% \n  summarise(count = n()) %&gt;%   \n  arrange(desc(count))\n\nQ1f\n\n# A tibble: 13,914 × 2\n   DBA                     count\n   &lt;chr&gt;                   &lt;int&gt;\n 1 dunkin                    402\n 2 starbucks                 286\n 3 mcdonald's                170\n 4 subway                    166\n 5 dunkin', baskin robbins   107\n 6 popeyes                    98\n 7 chipotle mexican grill     91\n 8 burger king                63\n 9 domino's                   60\n10 kennedy fried chicken      52\n# ℹ 13,904 more rows"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html",
+    "href": "posts/beer-markets/beer-markets.html",
+    "title": "Beer Markets",
+    "section": "",
+    "text": "Let’s analyze the beer_data data:\nbeer_data &lt;- read_csv(\"https://bcdanl.github.io/data/beer_markets.csv\")"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html#variable-description-for-beer_data-data.frame",
+    "href": "posts/beer-markets/beer-markets.html#variable-description-for-beer_data-data.frame",
+    "title": "Beer Markets",
+    "section": "Variable Description for beer_data data.frame",
+    "text": "Variable Description for beer_data data.frame\nThe following describes the variables in the beer_data data.frame.\n\nhh: Household identifier\n_purchase_desc: Description of the purchase\nquantity: The quantity of beer purchased\nbrand: The brand of beer\ndollar_spent: The amount spent\nbeer_floz: Fluid ounces of beer\nprice_per_floz: Price per fluid ounce\ncontainer: Type of container\npromo: Whether the purchase was on promotion\nmarket: The market where the purchase was made\nDemographics: age, employment status, degree, class of worker (cow), race, and household information like microwave, dishwasher, tvcable, singlefamilyhome, and npeople (number of people in the household)"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html#purchase-patterns",
+    "href": "posts/beer-markets/beer-markets.html#purchase-patterns",
+    "title": "Beer Markets",
+    "section": "Purchase Patterns",
+    "text": "Purchase Patterns\nWe’ll explore the purchase patterns in the dataset. This includes understanding the most popular brands, the average quantity purchased, and spending habits across different markets. Here are some specific analyses we can perform:\n\nCalculate the total quantity and spending for each brand.\nFind the average quantity purchased and average spending per purchase.\nCompare the total spending across different markets.\n\nI’ll begin with these analyses and create visualizations to help us understand the data better. Let’s start by calculating the total quantity and spending for each brand.\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Reading the CSV file\nbeer_data = pd.read_csv(\"https://bcdanl.github.io/data/beer_markets.csv\")\n\n# Setting up the visualisation settings\nsns.set(style=\"whitegrid\")\n\n# Calculate total quantity and spending for each brand\nbrand_summary = beer_data.groupby('brand').agg({'quantity':'sum', 'dollar_spent':'sum'}).reset_index()\n\n# Sort by total quantity and spending\nbrand_summary_sorted_quantity = brand_summary.sort_values('quantity', ascending=False)\nbrand_summary_sorted_spent = brand_summary.sort_values('dollar_spent', ascending=False)\n\n\n# Plotting total quantity for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='quantity', y='brand', data=brand_summary_sorted_quantity, palette='viridis')\nplt.title('Total Quantity of Beer Purchased by Brand')\nplt.xlabel('Total Quantity')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n# Plotting total spending for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='dollar_spent', y='brand', data=brand_summary_sorted_spent, palette='viridis')\nplt.title('Total Spending on Beer by Brand')\nplt.xlabel('Total Spending')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe bar charts above display the total quantity of beer purchased and the total spending by brand. From the looks of it, certain brands dominate in terms of quantity sold and total spending, indicating their popularity.\nNow, let’s calculate the average quantity purchased and average spending per purchase. For this, we’ll consider each row in the dataset as a separate purchase and compute the averages accordingly.\n\n# Calculate average quantity purchased and average spending per purchase\naverage_purchase = beer_data.groupby('brand').agg({\n    'quantity': 'mean', \n    'dollar_spent': 'mean'\n}).reset_index()\n\n# Sort by average quantity and average spending\naverage_purchase_sorted_quantity = average_purchase.sort_values('quantity', ascending=False)\naverage_purchase_sorted_spent = average_purchase.sort_values('dollar_spent', ascending=False)\n\n# Plotting average quantity for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='quantity', y='brand', data=average_purchase_sorted_quantity, palette='viridis')\nplt.title('Average Quantity of Beer Purchased by Brand')\nplt.xlabel('Average Quantity')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n# Plotting average spending for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='dollar_spent', y='brand', data=average_purchase_sorted_spent, palette='viridis')\nplt.title('Average Spending on Beer by Brand')\nplt.xlabel('Average Spending')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe visualizations above depict the average quantity of beer purchased per brand and the average spending per brand. This shows which brands tend to be bought in larger quantities on average and which brands tend to have higher spending per purchase, which could be indicative of their price point or the purchase of premium products.\nNext, we’ll look at the total spending across different markets to see if there are any notable differences in spending habits geographically. To do this, we’ll sum up the spending in each market and visualize it.\n\n# Calculate total spending in each market\nmarket_spending_summary = beer_data.groupby('market').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nmarket_spending_summary_sorted = market_spending_summary.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending in each market\nplt.figure(figsize=(12, 10))\nsns.barplot(x='dollar_spent', y='market', data=market_spending_summary_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Market')\nplt.xlabel('Total Spending')\nplt.ylabel('Market')\nplt.show()\n\n\n\n\nThe bar chart illustrates the total spending on beer by market, showcasing the differences in spending habits across various regions. Some markets have significantly higher spending, which could be due to a variety of factors including market size, consumer preferences, or economic factors.\nNow, let’s move on to the second analysis:"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html#demographic-analysis",
+    "href": "posts/beer-markets/beer-markets.html#demographic-analysis",
+    "title": "Beer Markets",
+    "section": "Demographic Analysis",
+    "text": "Demographic Analysis\nWe will examine which demographics are buying what kind of beer and whether spending habits vary by demographics such as age, employment, and race. For this, we could look at:\n\nSpending by age group\nSpending by employment status\nSpending by race\n\nI’ll start by analyzing spending by age group.\n\n# Calculate total spending by age group\nage_group_spending = beer_data.groupby('age').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nage_group_spending_sorted = age_group_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by age group\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='age', data=age_group_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Age Group')\nplt.xlabel('Total Spending')\nplt.ylabel('Age Group')\nplt.show()\n\n\n\n\nThe bar chart demonstrates the total spending on beer segmented by age group, highlighting which age groups spend the most on beer. It appears that certain age groups are more dominant in beer spending, which may align with the purchasing power or preferences of those groups.\nNext, we will examine spending by employment status.\n\n# Calculate total spending by employment status\nemployment_spending = beer_data.groupby('employment').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nemployment_spending_sorted = employment_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by employment status\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='employment', data=employment_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Employment Status')\nplt.xlabel('Total Spending')\nplt.ylabel('Employment Status')\nplt.show()\n\n\n\n\nThe visualization shows the total spending on beer by employment status. We can see that certain employment groups, such as full-time workers, are spending more on beer, which might be related to their disposable income.\nFinally, let’s look at spending by race to complete the demographic analysis.\n\n# Calculate total spending by race\nrace_spending = beer_data.groupby('race').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nrace_spending_sorted = race_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by race\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='race', data=race_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Race')\nplt.xlabel('Total Spending')\nplt.ylabel('Race')\nplt.show()\n\n\n\n\nThe bar chart above indicates the total spending on beer broken down by race, highlighting which racial groups account for the most beer spending within the dataset. This could reflect both the demographics of the regions where the data was collected and cultural preferences regarding beer.\nNow, let’s proceed to the third analysis:"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html#price-sensitivity",
+    "href": "posts/beer-markets/beer-markets.html#price-sensitivity",
+    "title": "Beer Markets",
+    "section": "Price Sensitivity",
+    "text": "Price Sensitivity\nWe’ll look at the price per fluid ounce and see if there are any trends or correlations with the quantity purchased or the brand popularity. To do this, we’ll calculate the average price per fluid ounce for each brand and then visualize how this relates to the average quantity purchased and the total quantity purchased by brand.\nFirst, let’s calculate the average price per fluid ounce for each brand.\n\n# Calculate average price per fluid ounce for each brand\nbrand_price_sensitivity = beer_data.groupby('brand').agg({\n    'price_per_floz': 'mean', \n    'quantity': 'sum'\n}).reset_index()\n\n# Sort by price per fluid ounce\nbrand_price_sensitivity_sorted = brand_price_sensitivity.sort_values('price_per_floz', ascending=True)\n\n# Plotting average price per fluid ounce for each brand and the total quantity purchased\nfig, ax1 = plt.subplots(figsize=(12, 10))\n\ncolor = 'tab:red'\nax1.set_xlabel('Brand')\nax1.set_ylabel('Average Price per Fluid Ounce', color=color)\nax1.bar(brand_price_sensitivity_sorted['brand'], brand_price_sensitivity_sorted['price_per_floz'], color=color)\nax1.tick_params(axis='y', labelcolor=color)\nax1.set_xticklabels(brand_price_sensitivity_sorted['brand'], rotation=90)\n\nax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis\ncolor = 'tab:blue'\nax2.set_ylabel('Total Quantity Purchased', color=color)  # we already handled the x-label with ax1\nax2.plot(brand_price_sensitivity_sorted['brand'], brand_price_sensitivity_sorted['quantity'], color=color)\nax2.tick_params(axis='y', labelcolor=color)\n\nfig.tight_layout()  # otherwise the right y-label is slightly clipped\nplt.title('Average Price per Fluid Ounce & Total Quantity Purchased by Brand')\nplt.show()\n\n\n\n\nIn the visualization, we have a bar graph showing the average price per fluid ounce for each brand (in red) and a line graph showing the total quantity purchased for each brand (in blue). This gives us a sense of whether there’s a relationship between the price and the quantity purchased. The x-axis labels are quite compressed due to the number of brands, but we can still observe trends such as whether lower-priced beers tend to be purchased in larger quantities.\nLastly, let’s move to the fourth analysis:"
+  },
+  {
+    "objectID": "posts/beer-markets/beer-markets.html#promotional-impact",
+    "href": "posts/beer-markets/beer-markets.html#promotional-impact",
+    "title": "Beer Markets",
+    "section": "Promotional Impact",
+    "text": "Promotional Impact\nWe’ll assess the impact of promotions on the quantity of beer purchased. For this analysis, we can calculate the average quantity purchased with and without promotions and visualize the difference. We’ll do this for each brand to see which brands are most affected by promotions.\nLet’s begin this analysis by looking at the average quantity purchased with and without promotions for each brand.\n\n# Calculate average quantity purchased with and without promotions for each brand\npromo_impact = beer_data.groupby(['brand', 'promo']).agg({'quantity':'mean'}).reset_index()\n\n# Pivot the data to have promo and non-promo side by side for each brand\npromo_impact_pivot = promo_impact.pivot(index='brand', columns='promo', values='quantity').reset_index()\npromo_impact_pivot.columns = ['brand', 'non_promo', 'promo']\n\n# Calculate the difference in average quantity purchased between promo and non-promo\npromo_impact_pivot['promo_impact'] = promo_impact_pivot['promo'] - promo_impact_pivot['non_promo']\n\n# Sort by the impact of promo\npromo_impact_pivot_sorted = promo_impact_pivot.sort_values('promo_impact', ascending=False)\n\n# Plotting the difference in average quantity purchased between promo and non-promo for each brand\nplt.figure(figsize=(12, 10))\nsns.barplot(x='promo_impact', y='brand', data=promo_impact_pivot_sorted, palette='viridis')\nplt.title('Impact of Promotions on Average Quantity Purchased by Brand')\nplt.xlabel('Difference in Average Quantity Purchased (Promo - Non-Promo)')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe bar chart illustrates the impact of promotions on the average quantity of beer purchased by brand. A positive value indicates that, on average, more beer is purchased when there is a promotion compared to when there isn’t. Some brands appear to be significantly more influenced by promotions, with customers buying more when the products are on sale or promotion.\nThis comprehensive analysis has provided insights into purchase patterns, demographic preferences, price sensitivity, and the impact of promotions on beer purchases."
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "Directed_Study.html",
+    "href": "Directed_Study.html",
+    "title": "Directed Study",
+    "section": "",
+    "text": "Loading in Packages\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ipumsr)\n\n\n\nLoading in data\nThis data set is from the Integrated Public Use Micro data website which provides micro data from United States surveys for research purposes. Below is is code I wrote to clean and analyze the data for undergraduate research I am currently working on.\n\nddi &lt;- read_ipums_ddi(\"usa_00007.xml\")\ndata &lt;- read_ipums_micro(ddi)\n\nUse of data from IPUMS USA is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.\n\n\n\n\nCleaning Data\n\n\nCreating New Variables\n\n\nDescriptive Statistics"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html",
+    "href": "basic_python_intro_(2).html",
+    "title": "Introduction to Python",
+    "section": "",
+    "text": "Python is a high-level, interpreted programming language. This is a simple Python code:\n\nprint('Hello, World!')\n\nHello, World!"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html#what-is-python",
+    "href": "basic_python_intro_(2).html#what-is-python",
+    "title": "Introduction to Python",
+    "section": "",
+    "text": "Python is a high-level, interpreted programming language. This is a simple Python code:\n\nprint('Hello, World!')\n\nHello, World!"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html#variables-and-data-types",
+    "href": "basic_python_intro_(2).html#variables-and-data-types",
+    "title": "Introduction to Python",
+    "section": "Variables and Data Types",
+    "text": "Variables and Data Types\nIn Python, variables can store data of different types without explicitly declaring the type.\nFor example:\n\ninteger_variable = 10\nstring_variable = 'Hello'\nfloat_variable = 10.5\n\nfloat_variable\n\n10.5"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html#control-structures",
+    "href": "basic_python_intro_(2).html#control-structures",
+    "title": "Introduction to Python",
+    "section": "Control Structures",
+    "text": "Control Structures\nPython supports the usual logical conditions from mathematics:\n\n# Equals: a == b\n# Not Equals: a != b\n# Less than: a &lt; b\n# Less than or equal to: a &lt;= b\n# Greater than: a &gt; b\n# Greater than or equal to: a &gt;= b\n\nThese conditions can be used in several ways, most commonly in ‘if statements’ and loops.\n\n# if statement:\nif 5 &gt; 2:\n    print('Five is greater than two!')"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html#functions",
+    "href": "basic_python_intro_(2).html#functions",
+    "title": "Introduction to Python",
+    "section": "Functions",
+    "text": "Functions\nA function is a block of code which only runs when it is called.\nYou can pass data, known as parameters, into a function.\nA function can return data as a result.\n\n# Defining a function:\ndef my_function():\n    print('Hello from a function')\n\n# Calling a function:\nmy_function()"
+  },
+  {
+    "objectID": "basic_python_intro_(2).html#lists-and-dictionaries",
+    "href": "basic_python_intro_(2).html#lists-and-dictionaries",
+    "title": "Introduction to Python",
+    "section": "Lists and Dictionaries",
+    "text": "Lists and Dictionaries\nA list is a collection which is ordered and changeable.\nA dictionary is a collection which is unordered, changeable and indexed.\n\n# List example:\nmy_list = ['apple', 'banana', 'cherry']\n\n# Dictionary example:\nmy_dict = {'name': 'John', 'age': 36}"
+  },
+  {
+    "objectID": "Classwork-11:29.html",
+    "href": "Classwork-11:29.html",
+    "title": "DANL-200-1129",
+    "section": "",
+    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\ntable1\n\n# A tibble: 6 × 4\n  country      year  cases population\n  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;\n1 Afghanistan  1999    745   19987071\n2 Afghanistan  2000   2666   20595360\n3 Brazil       1999  37737  172006362\n4 Brazil       2000  80488  174504898\n5 China        1999 212258 1272915272\n6 China        2000 213766 1280428583\n\ntable2\n\n# A tibble: 12 × 4\n   country      year type            count\n   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;\n 1 Afghanistan  1999 cases             745\n 2 Afghanistan  1999 population   19987071\n 3 Afghanistan  2000 cases            2666\n 4 Afghanistan  2000 population   20595360\n 5 Brazil       1999 cases           37737\n 6 Brazil       1999 population  172006362\n 7 Brazil       2000 cases           80488\n 8 Brazil       2000 population  174504898\n 9 China        1999 cases          212258\n10 China        1999 population 1272915272\n11 China        2000 cases          213766\n12 China        2000 population 1280428583\n\ntable3\n\n# A tibble: 6 × 3\n  country      year rate             \n  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            \n1 Afghanistan  1999 745/19987071     \n2 Afghanistan  2000 2666/20595360    \n3 Brazil       1999 37737/172006362  \n4 Brazil       2000 80488/174504898  \n5 China        1999 212258/1272915272\n6 China        2000 213766/1280428583\n\n# Spread across two tibbles\ntable4a  # cases\n\n# A tibble: 3 × 3\n  country     `1999` `2000`\n  &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;\n1 Afghanistan    745   2666\n2 Brazil       37737  80488\n3 China       212258 213766\n\ntable4b\n\n# A tibble: 3 × 3\n  country         `1999`     `2000`\n  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;\n1 Afghanistan   19987071   20595360\n2 Brazil       172006362  174504898\n3 China       1272915272 1280428583\n\ntable4a %&gt;% \n  pivot_longer(cols = c(`1999`, `2000`),\n               names_to = \"year\",\n               values_to = \"cases\")\n\n# A tibble: 6 × 3\n  country     year   cases\n  &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;\n1 Afghanistan 1999     745\n2 Afghanistan 2000    2666\n3 Brazil      1999   37737\n4 Brazil      2000   80488\n5 China       1999  212258\n6 China       2000  213766"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/starwars/starwars_df.html",
+    "href": "posts/starwars/starwars_df.html",
+    "title": "Starwars",
+    "section": "",
+    "text": "Let’s analyze the starwars data:\nstarwars &lt;- read_csv(\"https://bcdanl.github.io/data/starwars.csv\")"
+  },
+  {
+    "objectID": "posts/starwars/starwars_df.html#variable-description-for-starwars-data.frame",
+    "href": "posts/starwars/starwars_df.html#variable-description-for-starwars-data.frame",
+    "title": "Starwars",
+    "section": "Variable Description for starwars data.frame",
+    "text": "Variable Description for starwars data.frame\nThe following describes the variables in the starwars data.frame.\n\nfilms List of films the character appeared in\nname Name of the character\nspecies Name of species\nheight Height (cm)\nmass Weight (kg)\nhair_color, skin_color, eye_color Hair, skin, and eye colors\nbirth_year Year born (BBY = Before Battle of Yavin)\nsex The biological sex of the character, namely male, female, hermaphroditic, or none (as in the case for Droids).\ngender The gender role or gender identity of the character as determined by their personality or the way they were programmed (as in the case for Droids).\nhomeworld Name of homeworld"
+  },
+  {
+    "objectID": "posts/starwars/starwars_df.html#human-vs.-droid",
+    "href": "posts/starwars/starwars_df.html#human-vs.-droid",
+    "title": "Starwars",
+    "section": "Human vs. Droid",
+    "text": "Human vs. Droid\n\nggplot(data = \n         starwars %&gt;% \n         filter(species %in% c(\"Human\", \"Droid\"))) +\n  geom_boxplot(aes(x = species, y = mass, \n                   fill = species),\n               show.legend = FALSE)"
+  },
+  {
+    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html",
+    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html",
+    "title": "Spotify Artist Dataset",
+    "section": "",
+    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(skimr)\nlibrary(ggthemes)"
+  },
+  {
+    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#loading-in-data-set",
+    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#loading-in-data-set",
+    "title": "Spotify Artist Dataset",
+    "section": "Loading in Data set",
+    "text": "Loading in Data set\n\nspotify_all &lt;- read_csv('https://bcdanl.github.io/data/spotify_all.csv')\n\nRows: 198005 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): playlist_name, artist_name, track_name, album_name\ndbl (3): pid, pos, duration_ms\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nspotify_all\n\n# A tibble: 198,005 × 7\n     pid playlist_name   pos artist_name       track_name duration_ms album_name\n   &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;     \n 1     0 Throwbacks        0 Missy Elliott     Lose Cont…      226863 The Cookb…\n 2     0 Throwbacks        1 Britney Spears    Toxic           198800 In The Zo…\n 3     0 Throwbacks        2 Beyoncé           Crazy In …      235933 Dangerous…\n 4     0 Throwbacks        3 Justin Timberlake Rock Your…      267266 Justified \n 5     0 Throwbacks        4 Shaggy            It Wasn't…      227600 Hot Shot  \n 6     0 Throwbacks        5 Usher             Yeah!           250373 Confessio…\n 7     0 Throwbacks        6 Usher             My Boo          223440 Confessio…\n 8     0 Throwbacks        7 The Pussycat Dol… Buttons         225560 PCD       \n 9     0 Throwbacks        8 Destiny's Child   Say My Na…      271333 The Writi…\n10     0 Throwbacks        9 OutKast           Hey Ya! -…      235213 Speakerbo…\n# ℹ 197,995 more rows"
+  },
+  {
+    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
+    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
+    "title": "Spotify Artist Dataset",
+    "section": "The Artists for the Ten Most Popular Songs",
+    "text": "The Artists for the Ten Most Popular Songs\n\nQ1a &lt;- spotify_all %&gt;% \n  arrange(-`duration_ms`) %&gt;% \n  filter(playlist_name != \"Audiobooks\") %&gt;% \n  slice_head(n = 10) %&gt;% \n  select(`artist_name`)\n\nQ1a\n\n# A tibble: 10 × 1\n   artist_name          \n   &lt;chr&gt;                \n 1 Sound Dreamer        \n 2 Best of 9JA          \n 3 Late Night Tales     \n 4 Grandmaster Flash    \n 5 Brian Eno            \n 6 Reggae Mix USA       \n 7 Eric Thomas          \n 8 D.VELOPED            \n 9 Deftones             \n10 Jonathan David Helser"
+  },
+  {
+    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
+    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
+    "title": "Spotify Artist Dataset",
+    "section": "The Five Most Common Artists in the Data Frame 🧑‍🎨",
+    "text": "The Five Most Common Artists in the Data Frame 🧑‍🎨\n\nQ1b &lt;- spotify_all %&gt;% \n  group_by(`artist_name`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  slice_head(n = 5)\n\nQ1b\n\n# A tibble: 5 × 2\n  artist_name    count\n  &lt;chr&gt;          &lt;int&gt;\n1 Drake           2715\n2 Kanye West      1065\n3 Kendrick Lamar  1035\n4 Rihanna          915\n5 The Weeknd       913\n\n\n\nggplot(data = Q1b)+\n  geom_col(mapping = aes(x = artist_name,\n                             y = count,\n           color = artist_name))\n\n\n\n\nAs we can see Drake is very Popular 🎵\n\nMost popular songs by each of the 5 most popular artists\n\nQ1b2 &lt;- spotify_all %&gt;% \n  group_by(`track_name`, `artist_name`) %&gt;%\n  filter(`artist_name` %in% Q1b$artist_name) %&gt;% \n  summarise(po_song = n()) %&gt;% \n  arrange(-po_song)\n\n`summarise()` has grouped output by 'track_name'. You can override using the\n`.groups` argument.\n\nanswer &lt;- Q1b2 %&gt;% \n  group_by(`artist_name`) %&gt;% \n  filter(po_song == max(po_song)) %&gt;% \n  unite(Name_and_Track, track_name, artist_name, sep = \",\")\n\nanswer\n\n# A tibble: 5 × 2\n  Name_and_Track         po_song\n  &lt;chr&gt;                    &lt;int&gt;\n1 One Dance,Drake            143\n2 HUMBLE.,Kendrick Lamar     142\n3 Starboy,The Weeknd         100\n4 Gold Digger,Kanye West      83\n5 Needed Me,Rihanna           79\n\n\n\nggplot(data = answer)+\n  geom_col(mapping = aes(x = Name_and_Track,\n                         y = po_song,\n  color = Name_and_Track))+\nylab(\"Song Occurences\")"
   },
   {
     "objectID": "quarto-template.html",
@@ -84,298 +350,11 @@
     "text": "2.7 Inserting a HTML page"
   },
   {
-    "objectID": "posts/starwars/starwars_df.html",
-    "href": "posts/starwars/starwars_df.html",
-    "title": "Starwars",
-    "section": "",
-    "text": "Let’s analyze the starwars data:\nstarwars &lt;- read_csv(\"https://bcdanl.github.io/data/starwars.csv\")"
-  },
-  {
-    "objectID": "posts/starwars/starwars_df.html#variable-description-for-starwars-data.frame",
-    "href": "posts/starwars/starwars_df.html#variable-description-for-starwars-data.frame",
-    "title": "Starwars",
-    "section": "Variable Description for starwars data.frame",
-    "text": "Variable Description for starwars data.frame\nThe following describes the variables in the starwars data.frame.\n\nfilms List of films the character appeared in\nname Name of the character\nspecies Name of species\nheight Height (cm)\nmass Weight (kg)\nhair_color, skin_color, eye_color Hair, skin, and eye colors\nbirth_year Year born (BBY = Before Battle of Yavin)\nsex The biological sex of the character, namely male, female, hermaphroditic, or none (as in the case for Droids).\ngender The gender role or gender identity of the character as determined by their personality or the way they were programmed (as in the case for Droids).\nhomeworld Name of homeworld"
-  },
-  {
-    "objectID": "posts/starwars/starwars_df.html#human-vs.-droid",
-    "href": "posts/starwars/starwars_df.html#human-vs.-droid",
-    "title": "Starwars",
-    "section": "Human vs. Droid",
-    "text": "Human vs. Droid\n\nggplot(data = \n         starwars %&gt;% \n         filter(species %in% c(\"Human\", \"Droid\"))) +\n  geom_boxplot(aes(x = species, y = mass, \n                   fill = species),\n               show.legend = FALSE)"
-  },
-  {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "Classwork-11:29.html",
-    "href": "Classwork-11:29.html",
-    "title": "DANL-200-1129",
-    "section": "",
-    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\ntable1\n\n# A tibble: 6 × 4\n  country      year  cases population\n  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;\n1 Afghanistan  1999    745   19987071\n2 Afghanistan  2000   2666   20595360\n3 Brazil       1999  37737  172006362\n4 Brazil       2000  80488  174504898\n5 China        1999 212258 1272915272\n6 China        2000 213766 1280428583\n\ntable2\n\n# A tibble: 12 × 4\n   country      year type            count\n   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;\n 1 Afghanistan  1999 cases             745\n 2 Afghanistan  1999 population   19987071\n 3 Afghanistan  2000 cases            2666\n 4 Afghanistan  2000 population   20595360\n 5 Brazil       1999 cases           37737\n 6 Brazil       1999 population  172006362\n 7 Brazil       2000 cases           80488\n 8 Brazil       2000 population  174504898\n 9 China        1999 cases          212258\n10 China        1999 population 1272915272\n11 China        2000 cases          213766\n12 China        2000 population 1280428583\n\ntable3\n\n# A tibble: 6 × 3\n  country      year rate             \n  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            \n1 Afghanistan  1999 745/19987071     \n2 Afghanistan  2000 2666/20595360    \n3 Brazil       1999 37737/172006362  \n4 Brazil       2000 80488/174504898  \n5 China        1999 212258/1272915272\n6 China        2000 213766/1280428583\n\n# Spread across two tibbles\ntable4a  # cases\n\n# A tibble: 3 × 3\n  country     `1999` `2000`\n  &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;\n1 Afghanistan    745   2666\n2 Brazil       37737  80488\n3 China       212258 213766\n\ntable4b\n\n# A tibble: 3 × 3\n  country         `1999`     `2000`\n  &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;\n1 Afghanistan   19987071   20595360\n2 Brazil       172006362  174504898\n3 China       1272915272 1280428583\n\ntable4a %&gt;% \n  pivot_longer(cols = c(`1999`, `2000`),\n               names_to = \"year\",\n               values_to = \"cases\")\n\n# A tibble: 6 × 3\n  country     year   cases\n  &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;\n1 Afghanistan 1999     745\n2 Afghanistan 2000    2666\n3 Brazil      1999   37737\n4 Brazil      2000   80488\n5 China       1999  212258\n6 China       2000  213766"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html",
-    "href": "posts/beer-markets/beer-markets.html",
-    "title": "Beer Markets",
-    "section": "",
-    "text": "Let’s analyze the beer_data data:\nbeer_data &lt;- read_csv(\"https://bcdanl.github.io/data/beer_markets.csv\")"
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html#variable-description-for-beer_data-data.frame",
-    "href": "posts/beer-markets/beer-markets.html#variable-description-for-beer_data-data.frame",
-    "title": "Beer Markets",
-    "section": "Variable Description for beer_data data.frame",
-    "text": "Variable Description for beer_data data.frame\nThe following describes the variables in the beer_data data.frame.\n\nhh: Household identifier\n_purchase_desc: Description of the purchase\nquantity: The quantity of beer purchased\nbrand: The brand of beer\ndollar_spent: The amount spent\nbeer_floz: Fluid ounces of beer\nprice_per_floz: Price per fluid ounce\ncontainer: Type of container\npromo: Whether the purchase was on promotion\nmarket: The market where the purchase was made\nDemographics: age, employment status, degree, class of worker (cow), race, and household information like microwave, dishwasher, tvcable, singlefamilyhome, and npeople (number of people in the household)"
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html#purchase-patterns",
-    "href": "posts/beer-markets/beer-markets.html#purchase-patterns",
-    "title": "Beer Markets",
-    "section": "Purchase Patterns",
-    "text": "Purchase Patterns\nWe’ll explore the purchase patterns in the dataset. This includes understanding the most popular brands, the average quantity purchased, and spending habits across different markets. Here are some specific analyses we can perform:\n\nCalculate the total quantity and spending for each brand.\nFind the average quantity purchased and average spending per purchase.\nCompare the total spending across different markets.\n\nI’ll begin with these analyses and create visualizations to help us understand the data better. Let’s start by calculating the total quantity and spending for each brand.\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\n# Reading the CSV file\nbeer_data = pd.read_csv(\"https://bcdanl.github.io/data/beer_markets.csv\")\n\n# Setting up the visualisation settings\nsns.set(style=\"whitegrid\")\n\n# Calculate total quantity and spending for each brand\nbrand_summary = beer_data.groupby('brand').agg({'quantity':'sum', 'dollar_spent':'sum'}).reset_index()\n\n# Sort by total quantity and spending\nbrand_summary_sorted_quantity = brand_summary.sort_values('quantity', ascending=False)\nbrand_summary_sorted_spent = brand_summary.sort_values('dollar_spent', ascending=False)\n\n\n# Plotting total quantity for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='quantity', y='brand', data=brand_summary_sorted_quantity, palette='viridis')\nplt.title('Total Quantity of Beer Purchased by Brand')\nplt.xlabel('Total Quantity')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n# Plotting total spending for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='dollar_spent', y='brand', data=brand_summary_sorted_spent, palette='viridis')\nplt.title('Total Spending on Beer by Brand')\nplt.xlabel('Total Spending')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe bar charts above display the total quantity of beer purchased and the total spending by brand. From the looks of it, certain brands dominate in terms of quantity sold and total spending, indicating their popularity.\nNow, let’s calculate the average quantity purchased and average spending per purchase. For this, we’ll consider each row in the dataset as a separate purchase and compute the averages accordingly.\n\n# Calculate average quantity purchased and average spending per purchase\naverage_purchase = beer_data.groupby('brand').agg({\n    'quantity': 'mean', \n    'dollar_spent': 'mean'\n}).reset_index()\n\n# Sort by average quantity and average spending\naverage_purchase_sorted_quantity = average_purchase.sort_values('quantity', ascending=False)\naverage_purchase_sorted_spent = average_purchase.sort_values('dollar_spent', ascending=False)\n\n# Plotting average quantity for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='quantity', y='brand', data=average_purchase_sorted_quantity, palette='viridis')\nplt.title('Average Quantity of Beer Purchased by Brand')\nplt.xlabel('Average Quantity')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n# Plotting average spending for each brand\nplt.figure(figsize=(10, 8))\nsns.barplot(x='dollar_spent', y='brand', data=average_purchase_sorted_spent, palette='viridis')\nplt.title('Average Spending on Beer by Brand')\nplt.xlabel('Average Spending')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe visualizations above depict the average quantity of beer purchased per brand and the average spending per brand. This shows which brands tend to be bought in larger quantities on average and which brands tend to have higher spending per purchase, which could be indicative of their price point or the purchase of premium products.\nNext, we’ll look at the total spending across different markets to see if there are any notable differences in spending habits geographically. To do this, we’ll sum up the spending in each market and visualize it.\n\n# Calculate total spending in each market\nmarket_spending_summary = beer_data.groupby('market').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nmarket_spending_summary_sorted = market_spending_summary.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending in each market\nplt.figure(figsize=(12, 10))\nsns.barplot(x='dollar_spent', y='market', data=market_spending_summary_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Market')\nplt.xlabel('Total Spending')\nplt.ylabel('Market')\nplt.show()\n\n\n\n\nThe bar chart illustrates the total spending on beer by market, showcasing the differences in spending habits across various regions. Some markets have significantly higher spending, which could be due to a variety of factors including market size, consumer preferences, or economic factors.\nNow, let’s move on to the second analysis:"
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html#demographic-analysis",
-    "href": "posts/beer-markets/beer-markets.html#demographic-analysis",
-    "title": "Beer Markets",
-    "section": "Demographic Analysis",
-    "text": "Demographic Analysis\nWe will examine which demographics are buying what kind of beer and whether spending habits vary by demographics such as age, employment, and race. For this, we could look at:\n\nSpending by age group\nSpending by employment status\nSpending by race\n\nI’ll start by analyzing spending by age group.\n\n# Calculate total spending by age group\nage_group_spending = beer_data.groupby('age').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nage_group_spending_sorted = age_group_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by age group\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='age', data=age_group_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Age Group')\nplt.xlabel('Total Spending')\nplt.ylabel('Age Group')\nplt.show()\n\n\n\n\nThe bar chart demonstrates the total spending on beer segmented by age group, highlighting which age groups spend the most on beer. It appears that certain age groups are more dominant in beer spending, which may align with the purchasing power or preferences of those groups.\nNext, we will examine spending by employment status.\n\n# Calculate total spending by employment status\nemployment_spending = beer_data.groupby('employment').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nemployment_spending_sorted = employment_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by employment status\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='employment', data=employment_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Employment Status')\nplt.xlabel('Total Spending')\nplt.ylabel('Employment Status')\nplt.show()\n\n\n\n\nThe visualization shows the total spending on beer by employment status. We can see that certain employment groups, such as full-time workers, are spending more on beer, which might be related to their disposable income.\nFinally, let’s look at spending by race to complete the demographic analysis.\n\n# Calculate total spending by race\nrace_spending = beer_data.groupby('race').agg({'dollar_spent':'sum'}).reset_index()\n\n# Sort by total spending\nrace_spending_sorted = race_spending.sort_values('dollar_spent', ascending=False)\n\n# Plotting total spending by race\nplt.figure(figsize=(10, 6))\nsns.barplot(x='dollar_spent', y='race', data=race_spending_sorted, palette='viridis')\nplt.title('Total Spending on Beer by Race')\nplt.xlabel('Total Spending')\nplt.ylabel('Race')\nplt.show()\n\n\n\n\nThe bar chart above indicates the total spending on beer broken down by race, highlighting which racial groups account for the most beer spending within the dataset. This could reflect both the demographics of the regions where the data was collected and cultural preferences regarding beer.\nNow, let’s proceed to the third analysis:"
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html#price-sensitivity",
-    "href": "posts/beer-markets/beer-markets.html#price-sensitivity",
-    "title": "Beer Markets",
-    "section": "Price Sensitivity",
-    "text": "Price Sensitivity\nWe’ll look at the price per fluid ounce and see if there are any trends or correlations with the quantity purchased or the brand popularity. To do this, we’ll calculate the average price per fluid ounce for each brand and then visualize how this relates to the average quantity purchased and the total quantity purchased by brand.\nFirst, let’s calculate the average price per fluid ounce for each brand.\n\n# Calculate average price per fluid ounce for each brand\nbrand_price_sensitivity = beer_data.groupby('brand').agg({\n    'price_per_floz': 'mean', \n    'quantity': 'sum'\n}).reset_index()\n\n# Sort by price per fluid ounce\nbrand_price_sensitivity_sorted = brand_price_sensitivity.sort_values('price_per_floz', ascending=True)\n\n# Plotting average price per fluid ounce for each brand and the total quantity purchased\nfig, ax1 = plt.subplots(figsize=(12, 10))\n\ncolor = 'tab:red'\nax1.set_xlabel('Brand')\nax1.set_ylabel('Average Price per Fluid Ounce', color=color)\nax1.bar(brand_price_sensitivity_sorted['brand'], brand_price_sensitivity_sorted['price_per_floz'], color=color)\nax1.tick_params(axis='y', labelcolor=color)\nax1.set_xticklabels(brand_price_sensitivity_sorted['brand'], rotation=90)\n\nax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis\ncolor = 'tab:blue'\nax2.set_ylabel('Total Quantity Purchased', color=color)  # we already handled the x-label with ax1\nax2.plot(brand_price_sensitivity_sorted['brand'], brand_price_sensitivity_sorted['quantity'], color=color)\nax2.tick_params(axis='y', labelcolor=color)\n\nfig.tight_layout()  # otherwise the right y-label is slightly clipped\nplt.title('Average Price per Fluid Ounce & Total Quantity Purchased by Brand')\nplt.show()\n\n\n\n\nIn the visualization, we have a bar graph showing the average price per fluid ounce for each brand (in red) and a line graph showing the total quantity purchased for each brand (in blue). This gives us a sense of whether there’s a relationship between the price and the quantity purchased. The x-axis labels are quite compressed due to the number of brands, but we can still observe trends such as whether lower-priced beers tend to be purchased in larger quantities.\nLastly, let’s move to the fourth analysis:"
-  },
-  {
-    "objectID": "posts/beer-markets/beer-markets.html#promotional-impact",
-    "href": "posts/beer-markets/beer-markets.html#promotional-impact",
-    "title": "Beer Markets",
-    "section": "Promotional Impact",
-    "text": "Promotional Impact\nWe’ll assess the impact of promotions on the quantity of beer purchased. For this analysis, we can calculate the average quantity purchased with and without promotions and visualize the difference. We’ll do this for each brand to see which brands are most affected by promotions.\nLet’s begin this analysis by looking at the average quantity purchased with and without promotions for each brand.\n\n# Calculate average quantity purchased with and without promotions for each brand\npromo_impact = beer_data.groupby(['brand', 'promo']).agg({'quantity':'mean'}).reset_index()\n\n# Pivot the data to have promo and non-promo side by side for each brand\npromo_impact_pivot = promo_impact.pivot(index='brand', columns='promo', values='quantity').reset_index()\npromo_impact_pivot.columns = ['brand', 'non_promo', 'promo']\n\n# Calculate the difference in average quantity purchased between promo and non-promo\npromo_impact_pivot['promo_impact'] = promo_impact_pivot['promo'] - promo_impact_pivot['non_promo']\n\n# Sort by the impact of promo\npromo_impact_pivot_sorted = promo_impact_pivot.sort_values('promo_impact', ascending=False)\n\n# Plotting the difference in average quantity purchased between promo and non-promo for each brand\nplt.figure(figsize=(12, 10))\nsns.barplot(x='promo_impact', y='brand', data=promo_impact_pivot_sorted, palette='viridis')\nplt.title('Impact of Promotions on Average Quantity Purchased by Brand')\nplt.xlabel('Difference in Average Quantity Purchased (Promo - Non-Promo)')\nplt.ylabel('Brand')\nplt.show()\n\n\n\n\nThe bar chart illustrates the impact of promotions on the average quantity of beer purchased by brand. A positive value indicates that, on average, more beer is purchased when there is a promotion compared to when there isn’t. Some brands appear to be significantly more influenced by promotions, with customers buying more when the products are on sale or promotion.\nThis comprehensive analysis has provided insights into purchase patterns, demographic preferences, price sensitivity, and the impact of promotions on beer purchases."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Jack Katz",
-    "section": "",
-    "text": "Jack Katz majors in Economics at SUNY Geneseo. When not doing school work, Jack enjoys watching movies, going hiking, and making soups."
-  },
-  {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
-    "title": "Jack Katz",
-    "section": "Education",
-    "text": "Education\nState University of New York at Geneseo | Geneseo, NY  B.A. in Economics | Aug 2020 - May 2024  Minor in English Literature"
-  },
-  {
-    "objectID": "index.html#experience",
-    "href": "index.html#experience",
-    "title": "Jack Katz",
-    "section": "Experience",
-    "text": "Experience\nSUNY Geneseo Federal Reserve Challenge Team Member | June 2023 - Current"
-  },
-  {
-    "objectID": "Class_Notes_12-8.html",
-    "href": "Class_Notes_12-8.html",
-    "title": "Class-Notes_12-8",
-    "section": "",
-    "text": "df1 &lt;- data.frame(id = 1:3, \n                  name = c(\"Alice\", \"Bob\", \"Charlie\")\n                  )\ndf2 &lt;- data.frame(id = 4:6, \n                  name = c(\"Dave\", \"Eve\", \"Frank\")\n                  )\ndf_rbind &lt;- rbind(df1, df2)\ndf_cbind &lt;- cbind(df1, df2) # better to rename id before cbind()"
-  },
-  {
-    "objectID": "Restaurant_Inspection.html",
-    "href": "Restaurant_Inspection.html",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "Restaurant_Inspection.html#loading-in-packages",
-    "href": "Restaurant_Inspection.html#loading-in-packages",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "##Loading in Data\n\nrestaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
-  },
-  {
-    "objectID": "Restaurant_Inspection.html#creating-descriptive-statistics",
-    "href": "Restaurant_Inspection.html#creating-descriptive-statistics",
-    "title": "Restaurant Inspection Data",
-    "section": "Creating Descriptive Statistics",
-    "text": "Creating Descriptive Statistics\n\nQ1a &lt;- restaurant %&gt;% \n  group_by(GRADE) %&gt;% \n  summarise(SD_value = sd(SCORE),\n            first_quartile = quantile(SCORE, 0.25),\n            median_value = median(SCORE),\n            third_quartile = quantile(SCORE, .75),\n            MAX_value = max(SCORE))\n\n\nRelationship between Grade and Score\nBox plots can show us the relationship between a character variable and a quantitative variable.\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))\n\n\n\n\n###Relationship between grade score and critical flag\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))\n\n\n\n\n\n\nIn this ggplot graph we can see which Cuisine Description has the highest proportion of Grade A rankings\n\nQ1e &lt;- restaurant %&gt;% \n  group_by(`CUISINE DESCRIPTION`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  head(n = 10)\n\nQ1e\n\n# A tibble: 10 × 2\n   `CUISINE DESCRIPTION`    count\n   &lt;chr&gt;                    &lt;int&gt;\n 1 American                  3678\n 2 Coffee/Tea                1414\n 3 Chinese                   1372\n 4 Pizza                     1050\n 5 Italian                    689\n 6 Bakery Products/Desserts   615\n 7 Japanese                   584\n 8 Mexican                    582\n 9 Latin American             544\n10 Donuts                     505\n\n\n\nGrades &lt;- restaurant %&gt;% \n  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))\nGrades\n\n# A tibble: 11,033 × 12\n      CAMIS DBA      BORO  STREET `CUISINE DESCRIPTION` `INSPECTION DATE` ACTION\n      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;             &lt;chr&gt; \n 1 40356018 riviera… Broo… STILL… American              02/01/2022        Viola…\n 2 40357217 wild as… Bronx SOUTH… American              07/28/2021        Viola…\n 3 40359480 1 east … Manh… EAST … American              05/03/2022        Viola…\n 4 40362264 p & s d… Manh… COLUM… American              02/07/2023        Viola…\n 5 40362274 angelik… Manh… WEST … American              02/14/2022        Viola…\n 6 40362432 ho mei … Quee… 37 AV… Chinese               10/25/2022        Viola…\n 7 40363298 cafe me… Manh… 8 AVE… American              09/02/2022        Viola…\n 8 40363920 new gol… Broo… RUTLA… Chinese               02/16/2022        Viola…\n 9 40364305 philade… Broo… 4 AVE… Pizza                 01/23/2023        Viola…\n10 40364347 metropo… Manh… EAST … American              04/12/2022        Viola…\n# ℹ 11,023 more rows\n# ℹ 5 more variables: `VIOLATION CODE` &lt;chr&gt;, `VIOLATION DESCRIPTION` &lt;chr&gt;,\n#   `CRITICAL FLAG` &lt;chr&gt;, SCORE &lt;dbl&gt;, GRADE &lt;chr&gt;\n\n\n\nggplot(data = Grades)+\n  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, \n                         y = after_stat(prop),\n                         group = GRADE,\n                         fill = GRADE))\n\n\n\n\nFrom this ggplot we can see that donuts have the highest proportion of A grades for health.\n\n\nMost popular restaurant type\n\nQ1f &lt;- restaurant %&gt;% \n  group_by(`DBA`) %&gt;% \n  summarise(count = n()) %&gt;%   \n  arrange(desc(count))\n\nQ1f\n\n# A tibble: 13,914 × 2\n   DBA                     count\n   &lt;chr&gt;                   &lt;int&gt;\n 1 dunkin                    402\n 2 starbucks                 286\n 3 mcdonald's                170\n 4 subway                    166\n 5 dunkin', baskin robbins   107\n 6 popeyes                    98\n 7 chipotle mexican grill     91\n 8 burger king                63\n 9 domino's                   60\n10 kennedy fried chicken      52\n# ℹ 13,904 more rows"
-  },
-  {
-    "objectID": "Restaurant_Inspection.html#loading-in-data",
-    "href": "Restaurant_Inspection.html#loading-in-data",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection.html",
-    "href": "BlogPosts/Restaurant_Inspection.html",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection.html#loading-in-data",
-    "href": "BlogPosts/Restaurant_Inspection.html#loading-in-data",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection.html#creating-descriptive-statistics",
-    "href": "BlogPosts/Restaurant_Inspection.html#creating-descriptive-statistics",
-    "title": "Restaurant Inspection Data",
-    "section": "Creating Descriptive Statistics",
-    "text": "Creating Descriptive Statistics\n\nQ1a &lt;- restaurant %&gt;% \n  group_by(GRADE) %&gt;% \n  summarise(SD_value = sd(SCORE),\n            first_quartile = quantile(SCORE, 0.25),\n            median_value = median(SCORE),\n            third_quartile = quantile(SCORE, .75),\n            MAX_value = max(SCORE))\n\n\nRelationship between Grade and Score\nBox plots can show us the relationship between a character variable and a quantitative variable.\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))\n\n\n\n\n###Relationship between grade score and critical flag\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))\n\n\n\n\n\n\nIn this ggplot graph we can see which Cuisine Description has the highest proportion of Grade A rankings\n\nQ1e &lt;- restaurant %&gt;% \n  group_by(`CUISINE DESCRIPTION`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  head(n = 10)\n\nQ1e\n\n# A tibble: 10 × 2\n   `CUISINE DESCRIPTION`    count\n   &lt;chr&gt;                    &lt;int&gt;\n 1 American                  3678\n 2 Coffee/Tea                1414\n 3 Chinese                   1372\n 4 Pizza                     1050\n 5 Italian                    689\n 6 Bakery Products/Desserts   615\n 7 Japanese                   584\n 8 Mexican                    582\n 9 Latin American             544\n10 Donuts                     505\n\n\n\nGrades &lt;- restaurant %&gt;% \n  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))\nGrades\n\n# A tibble: 11,033 × 12\n      CAMIS DBA      BORO  STREET `CUISINE DESCRIPTION` `INSPECTION DATE` ACTION\n      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;             &lt;chr&gt; \n 1 40356018 riviera… Broo… STILL… American              02/01/2022        Viola…\n 2 40357217 wild as… Bronx SOUTH… American              07/28/2021        Viola…\n 3 40359480 1 east … Manh… EAST … American              05/03/2022        Viola…\n 4 40362264 p & s d… Manh… COLUM… American              02/07/2023        Viola…\n 5 40362274 angelik… Manh… WEST … American              02/14/2022        Viola…\n 6 40362432 ho mei … Quee… 37 AV… Chinese               10/25/2022        Viola…\n 7 40363298 cafe me… Manh… 8 AVE… American              09/02/2022        Viola…\n 8 40363920 new gol… Broo… RUTLA… Chinese               02/16/2022        Viola…\n 9 40364305 philade… Broo… 4 AVE… Pizza                 01/23/2023        Viola…\n10 40364347 metropo… Manh… EAST … American              04/12/2022        Viola…\n# ℹ 11,023 more rows\n# ℹ 5 more variables: `VIOLATION CODE` &lt;chr&gt;, `VIOLATION DESCRIPTION` &lt;chr&gt;,\n#   `CRITICAL FLAG` &lt;chr&gt;, SCORE &lt;dbl&gt;, GRADE &lt;chr&gt;\n\n\n\nggplot(data = Grades)+\n  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, \n                         y = after_stat(prop),\n                         group = GRADE,\n                         fill = GRADE))\n\n\n\n\nFrom this ggplot we can see that donuts have the highest proportion of A grades for health.\n\n\nMost popular restaurant type\n\nQ1f &lt;- restaurant %&gt;% \n  group_by(`DBA`) %&gt;% \n  summarise(count = n()) %&gt;%   \n  arrange(desc(count))\n\nQ1f\n\n# A tibble: 13,914 × 2\n   DBA                     count\n   &lt;chr&gt;                   &lt;int&gt;\n 1 dunkin                    402\n 2 starbucks                 286\n 3 mcdonald's                170\n 4 subway                    166\n 5 dunkin', baskin robbins   107\n 6 popeyes                    98\n 7 chipotle mexican grill     91\n 8 burger king                63\n 9 domino's                   60\n10 kennedy fried chicken      52\n# ℹ 13,904 more rows"
-  },
-  {
-    "objectID": "Spotify_Blog.html",
-    "href": "Spotify_Blog.html",
-    "title": "Spotify Artist Dataset",
-    "section": "",
-    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(skimr)\nlibrary(ggthemes)"
-  },
-  {
-    "objectID": "Spotify_Blog.html#loading-in-data-set",
-    "href": "Spotify_Blog.html#loading-in-data-set",
-    "title": "Spotify Artist Dataset",
-    "section": "Loading in Data set",
-    "text": "Loading in Data set\n\nspotify_all &lt;- read_csv('https://bcdanl.github.io/data/spotify_all.csv')\n\nRows: 198005 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): playlist_name, artist_name, track_name, album_name\ndbl (3): pid, pos, duration_ms\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nspotify_all\n\n# A tibble: 198,005 × 7\n     pid playlist_name   pos artist_name       track_name duration_ms album_name\n   &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;     \n 1     0 Throwbacks        0 Missy Elliott     Lose Cont…      226863 The Cookb…\n 2     0 Throwbacks        1 Britney Spears    Toxic           198800 In The Zo…\n 3     0 Throwbacks        2 Beyoncé           Crazy In …      235933 Dangerous…\n 4     0 Throwbacks        3 Justin Timberlake Rock Your…      267266 Justified \n 5     0 Throwbacks        4 Shaggy            It Wasn't…      227600 Hot Shot  \n 6     0 Throwbacks        5 Usher             Yeah!           250373 Confessio…\n 7     0 Throwbacks        6 Usher             My Boo          223440 Confessio…\n 8     0 Throwbacks        7 The Pussycat Dol… Buttons         225560 PCD       \n 9     0 Throwbacks        8 Destiny's Child   Say My Na…      271333 The Writi…\n10     0 Throwbacks        9 OutKast           Hey Ya! -…      235213 Speakerbo…\n# ℹ 197,995 more rows"
-  },
-  {
-    "objectID": "Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
-    "href": "Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
-    "title": "Spotify Artist Dataset",
-    "section": "The Artists for the Ten Most Popular Songs",
-    "text": "The Artists for the Ten Most Popular Songs\n\nQ1a &lt;- spotify_all %&gt;% \n  arrange(-`duration_ms`) %&gt;% \n  filter(playlist_name != \"Audiobooks\") %&gt;% \n  slice_head(n = 10) %&gt;% \n  select(`artist_name`)\n\nQ1a\n\n# A tibble: 10 × 1\n   artist_name          \n   &lt;chr&gt;                \n 1 Sound Dreamer        \n 2 Best of 9JA          \n 3 Late Night Tales     \n 4 Grandmaster Flash    \n 5 Brian Eno            \n 6 Reggae Mix USA       \n 7 Eric Thomas          \n 8 D.VELOPED            \n 9 Deftones             \n10 Jonathan David Helser"
-  },
-  {
-    "objectID": "Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame-yum",
-    "href": "Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame-yum",
-    "title": "Spotify Artist Dataset",
-    "section": "The Five Most Common Artists in the Data Frame :yum:",
-    "text": "The Five Most Common Artists in the Data Frame :yum:"
-  },
-  {
-    "objectID": "Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
-    "href": "Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
-    "title": "Spotify Artist Dataset",
-    "section": "The Five Most Common Artists in the Data Frame 🧑‍🎨",
-    "text": "The Five Most Common Artists in the Data Frame 🧑‍🎨\n\nQ1b &lt;- spotify_all %&gt;% \n  group_by(`artist_name`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  slice_head(n = 5)\n\nQ1b\n\n# A tibble: 5 × 2\n  artist_name    count\n  &lt;chr&gt;          &lt;int&gt;\n1 Drake           2715\n2 Kanye West      1065\n3 Kendrick Lamar  1035\n4 Rihanna          915\n5 The Weeknd       913\n\n\n\nggplot(data = Q1b)+\n  geom_col(mapping = aes(x = artist_name,\n                             y = count,\n           color = artist_name))\n\n\n\n\nAs we can see Drake is very Popular 🎵\n\nMost popular songs by each of the 5 most popular artists\n\nQ1b2 &lt;- spotify_all %&gt;% \n  group_by(`track_name`, `artist_name`) %&gt;%\n  filter(`artist_name` %in% Q1b$artist_name) %&gt;% \n  summarise(po_song = n()) %&gt;% \n  arrange(-po_song)\n\n`summarise()` has grouped output by 'track_name'. You can override using the\n`.groups` argument.\n\nanswer &lt;- Q1b2 %&gt;% \n  group_by(`artist_name`) %&gt;% \n  filter(po_song == max(po_song)) %&gt;% \n  unite(Name_and_Track, track_name, artist_name, sep = \",\")\n\nanswer\n\n# A tibble: 5 × 2\n  Name_and_Track         po_song\n  &lt;chr&gt;                    &lt;int&gt;\n1 One Dance,Drake            143\n2 HUMBLE.,Kendrick Lamar     142\n3 Starboy,The Weeknd         100\n4 Gold Digger,Kanye West      83\n5 Needed Me,Rihanna           79\n\n\n\nggplot(data = answer)+\n  geom_col(mapping = aes(x = Name_and_Track,\n                         y = po_song,\n  color = Name_and_Track))+\nylab(\"Song Occurences\")"
-  },
-  {
-    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html",
-    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html",
-    "title": "Spotify Artist Dataset",
-    "section": "",
-    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(skimr)\nlibrary(ggthemes)"
-  },
-  {
-    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#loading-in-data-set",
-    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#loading-in-data-set",
-    "title": "Spotify Artist Dataset",
-    "section": "Loading in Data set",
-    "text": "Loading in Data set\n\nspotify_all &lt;- read_csv('https://bcdanl.github.io/data/spotify_all.csv')\n\nRows: 198005 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): playlist_name, artist_name, track_name, album_name\ndbl (3): pid, pos, duration_ms\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nspotify_all\n\n# A tibble: 198,005 × 7\n     pid playlist_name   pos artist_name       track_name duration_ms album_name\n   &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;     \n 1     0 Throwbacks        0 Missy Elliott     Lose Cont…      226863 The Cookb…\n 2     0 Throwbacks        1 Britney Spears    Toxic           198800 In The Zo…\n 3     0 Throwbacks        2 Beyoncé           Crazy In …      235933 Dangerous…\n 4     0 Throwbacks        3 Justin Timberlake Rock Your…      267266 Justified \n 5     0 Throwbacks        4 Shaggy            It Wasn't…      227600 Hot Shot  \n 6     0 Throwbacks        5 Usher             Yeah!           250373 Confessio…\n 7     0 Throwbacks        6 Usher             My Boo          223440 Confessio…\n 8     0 Throwbacks        7 The Pussycat Dol… Buttons         225560 PCD       \n 9     0 Throwbacks        8 Destiny's Child   Say My Na…      271333 The Writi…\n10     0 Throwbacks        9 OutKast           Hey Ya! -…      235213 Speakerbo…\n# ℹ 197,995 more rows"
-  },
-  {
-    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
-    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-artists-for-the-ten-most-popular-songs",
-    "title": "Spotify Artist Dataset",
-    "section": "The Artists for the Ten Most Popular Songs",
-    "text": "The Artists for the Ten Most Popular Songs\n\nQ1a &lt;- spotify_all %&gt;% \n  arrange(-`duration_ms`) %&gt;% \n  filter(playlist_name != \"Audiobooks\") %&gt;% \n  slice_head(n = 10) %&gt;% \n  select(`artist_name`)\n\nQ1a\n\n# A tibble: 10 × 1\n   artist_name          \n   &lt;chr&gt;                \n 1 Sound Dreamer        \n 2 Best of 9JA          \n 3 Late Night Tales     \n 4 Grandmaster Flash    \n 5 Brian Eno            \n 6 Reggae Mix USA       \n 7 Eric Thomas          \n 8 D.VELOPED            \n 9 Deftones             \n10 Jonathan David Helser"
-  },
-  {
-    "objectID": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
-    "href": "BlogPosts/Spotify_Blog_files/Spotify_Blog.html#the-five-most-common-artists-in-the-data-frame",
-    "title": "Spotify Artist Dataset",
-    "section": "The Five Most Common Artists in the Data Frame 🧑‍🎨",
-    "text": "The Five Most Common Artists in the Data Frame 🧑‍🎨\n\nQ1b &lt;- spotify_all %&gt;% \n  group_by(`artist_name`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  slice_head(n = 5)\n\nQ1b\n\n# A tibble: 5 × 2\n  artist_name    count\n  &lt;chr&gt;          &lt;int&gt;\n1 Drake           2715\n2 Kanye West      1065\n3 Kendrick Lamar  1035\n4 Rihanna          915\n5 The Weeknd       913\n\n\n\nggplot(data = Q1b)+\n  geom_col(mapping = aes(x = artist_name,\n                             y = count,\n           color = artist_name))\n\n\n\n\nAs we can see Drake is very Popular 🎵\n\nMost popular songs by each of the 5 most popular artists\n\nQ1b2 &lt;- spotify_all %&gt;% \n  group_by(`track_name`, `artist_name`) %&gt;%\n  filter(`artist_name` %in% Q1b$artist_name) %&gt;% \n  summarise(po_song = n()) %&gt;% \n  arrange(-po_song)\n\n`summarise()` has grouped output by 'track_name'. You can override using the\n`.groups` argument.\n\nanswer &lt;- Q1b2 %&gt;% \n  group_by(`artist_name`) %&gt;% \n  filter(po_song == max(po_song)) %&gt;% \n  unite(Name_and_Track, track_name, artist_name, sep = \",\")\n\nanswer\n\n# A tibble: 5 × 2\n  Name_and_Track         po_song\n  &lt;chr&gt;                    &lt;int&gt;\n1 One Dance,Drake            143\n2 HUMBLE.,Kendrick Lamar     142\n3 Starboy,The Weeknd         100\n4 Gold Digger,Kanye West      83\n5 Needed Me,Rihanna           79\n\n\n\nggplot(data = answer)+\n  geom_col(mapping = aes(x = Name_and_Track,\n                         y = po_song,\n  color = Name_and_Track))+\nylab(\"Song Occurences\")"
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html",
-    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#loading-in-data",
-    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#loading-in-data",
-    "title": "Restaurant Inspection Data",
-    "section": "",
-    "text": "restaurant &lt;- read_csv(\n  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'\n)\n\nRows: 17633 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (10): DBA, BORO, STREET, CUISINE DESCRIPTION, INSPECTION DATE, ACTION, V...\ndbl  (2): CAMIS, SCORE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\nThis dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections."
-  },
-  {
-    "objectID": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#creating-descriptive-statistics",
-    "href": "BlogPosts/Restaurant_Inspection_files/Restaurant_Inspection.html#creating-descriptive-statistics",
-    "title": "Restaurant Inspection Data",
-    "section": "Creating Descriptive Statistics",
-    "text": "Creating Descriptive Statistics\n\nQ1a &lt;- restaurant %&gt;% \n  group_by(GRADE) %&gt;% \n  summarise(SD_value = sd(SCORE),\n            first_quartile = quantile(SCORE, 0.25),\n            median_value = median(SCORE),\n            third_quartile = quantile(SCORE, .75),\n            MAX_value = max(SCORE))\n\n\nRelationship between Grade and Score\nBox plots can show us the relationship between a character variable and a quantitative variable.\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))\n\n\n\n\n###Relationship between grade score and critical flag\n\nggplot(data = restaurant)+\n  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))\n\n\n\n\n\n\nIn this ggplot graph we can see which Cuisine Description has the highest proportion of Grade A rankings\n\nQ1e &lt;- restaurant %&gt;% \n  group_by(`CUISINE DESCRIPTION`) %&gt;% \n  summarise(count = n()) %&gt;% \n  arrange(-count) %&gt;% \n  head(n = 10)\n\nQ1e\n\n# A tibble: 10 × 2\n   `CUISINE DESCRIPTION`    count\n   &lt;chr&gt;                    &lt;int&gt;\n 1 American                  3678\n 2 Coffee/Tea                1414\n 3 Chinese                   1372\n 4 Pizza                     1050\n 5 Italian                    689\n 6 Bakery Products/Desserts   615\n 7 Japanese                   584\n 8 Mexican                    582\n 9 Latin American             544\n10 Donuts                     505\n\n\n\nGrades &lt;- restaurant %&gt;% \n  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))\nGrades\n\n# A tibble: 11,033 × 12\n      CAMIS DBA      BORO  STREET `CUISINE DESCRIPTION` `INSPECTION DATE` ACTION\n      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;             &lt;chr&gt; \n 1 40356018 riviera… Broo… STILL… American              02/01/2022        Viola…\n 2 40357217 wild as… Bronx SOUTH… American              07/28/2021        Viola…\n 3 40359480 1 east … Manh… EAST … American              05/03/2022        Viola…\n 4 40362264 p & s d… Manh… COLUM… American              02/07/2023        Viola…\n 5 40362274 angelik… Manh… WEST … American              02/14/2022        Viola…\n 6 40362432 ho mei … Quee… 37 AV… Chinese               10/25/2022        Viola…\n 7 40363298 cafe me… Manh… 8 AVE… American              09/02/2022        Viola…\n 8 40363920 new gol… Broo… RUTLA… Chinese               02/16/2022        Viola…\n 9 40364305 philade… Broo… 4 AVE… Pizza                 01/23/2023        Viola…\n10 40364347 metropo… Manh… EAST … American              04/12/2022        Viola…\n# ℹ 11,023 more rows\n# ℹ 5 more variables: `VIOLATION CODE` &lt;chr&gt;, `VIOLATION DESCRIPTION` &lt;chr&gt;,\n#   `CRITICAL FLAG` &lt;chr&gt;, SCORE &lt;dbl&gt;, GRADE &lt;chr&gt;\n\n\n\nggplot(data = Grades)+\n  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, \n                         y = after_stat(prop),\n                         group = GRADE,\n                         fill = GRADE))\n\n\n\n\nFrom this ggplot we can see that donuts have the highest proportion of A grades for health.\n\n\nMost popular restaurant type\n\nQ1f &lt;- restaurant %&gt;% \n  group_by(`DBA`) %&gt;% \n  summarise(count = n()) %&gt;%   \n  arrange(desc(count))\n\nQ1f\n\n# A tibble: 13,914 × 2\n   DBA                     count\n   &lt;chr&gt;                   &lt;int&gt;\n 1 dunkin                    402\n 2 starbucks                 286\n 3 mcdonald's                170\n 4 subway                    166\n 5 dunkin', baskin robbins   107\n 6 popeyes                    98\n 7 chipotle mexican grill     91\n 8 burger king                63\n 9 domino's                   60\n10 kennedy fried chicken      52\n# ℹ 13,904 more rows"
-  },
-  {
-    "objectID": "Stock_Volatility.html",
-    "href": "Stock_Volatility.html",
-    "title": "Stock Volatility",
-    "section": "",
-    "text": "#loading packages\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(tidyselect)\nlibrary(skimr)\nlibrary(ggthemes)\n# loading data\nStock_data &lt;- read.csv(\"/Users/jackkatz/Downloads/data.csv\")"
-  },
-  {
-    "objectID": "Stock_Volatility.html#calculating-volatility",
-    "href": "Stock_Volatility.html#calculating-volatility",
-    "title": "Stock Volatility",
-    "section": "Calculating Volatility",
-    "text": "Calculating Volatility\nBy separating the month and day from the year and creating a new variable, we can group the data set by Year and Company and find the standard deviations from Close.Last.Numeric.\n\nVolatility_analysis &lt;- Stock_data_clean %&gt;% \n  separate(Date, into = c(\"Month/Day\",\"Year\"), sep = 6 )\n\nhead(Volatility_analysis, n = 10)\n\n   Company Month/Day Year   Volume Close.Last.Numeric Open.Numeric High.Numeric\n1     AAPL    07/17/ 2023 50520160             193.99       191.90       194.32\n2     AAPL    07/14/ 2023 41616240             190.69       190.23     191.1799\n3     AAPL    07/13/ 2023 41342340             190.54       190.50       191.19\n4     AAPL    07-12- 2023 60750250             189.77       189.68       191.70\n5     AAPL    07-11- 2023 46638120             188.08       189.16       189.30\n6     AAPL    07-10- 2023 59922160             188.61       189.26       189.99\n7     AAPL    07-07- 2023 46815000             190.68       191.41       192.67\n8     AAPL    07-06- 2023 45156010             191.81       189.84       192.02\n9     AAPL    07-05- 2023 46920260             191.33      191.565       192.98\n10    AAPL    07-03- 2023 31346600             192.46       193.78       193.88\n   Low.Numeric\n1       191.81\n2       189.63\n3       189.78\n4       188.47\n5       186.60\n6      187.035\n7       190.24\n8       189.20\n9       190.62\n10      191.76\n\n\n\nHistorical_Volatility &lt;- Volatility_analysis %&gt;% \n  group_by(Company, Year) %&gt;% \n  summarise(Volatility = sd(Close.Last.Numeric))\n\n`summarise()` has grouped output by 'Company'. You can override using the\n`.groups` argument.\n\nhead(Historical_Volatility, n = 10)\n\n# A tibble: 10 × 3\n# Groups:   Company [1]\n   Company Year  Volatility\n   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;\n 1 AAPL    2013        1.33\n 2 AAPL    2014        3.34\n 3 AAPL    2015        1.92\n 4 AAPL    2016        1.91\n 5 AAPL    2017        3.66\n 6 AAPL    2018        5.15\n 7 AAPL    2019        8.63\n 8 AAPL    2020       21.8 \n 9 AAPL    2021       14.7 \n10 AAPL    2022       13.1 \n\n\nFrom this dataset we then used ggplot to show each companies volatility from 2013-2023\n\nggplot(Historical_Volatility,\n       mapping = aes(x = Year,\n                     y = Volatility),\n       grouping = 1)+\n  geom_point()+\n  facet_wrap( . ~Company)+\n  theme_economist_white()\n\n\n\n\nFrom here we can now see how the volatility changes. Other than CSCO and SBUX the collection of stocks has an increase in volatility over time. The increase happens for most companies around 2020. According to the graphs the most volaitle companies are NFLX, TSLA, and META."
-  },
-  {
     "objectID": "Economic_.html",
     "href": "Economic_.html",
     "title": "Economic_Model",
     "section": "",
     "text": "PFAS producing firm is either a monopoly or a competitive firm. How do the optimal quantities of the PFAS product differ for each type of firm? How does the tax rate differ for each firm?"
-  },
-  {
-    "objectID": "Economic_.html#f.o.c.-2",
-    "href": "Economic_.html#f.o.c.-2",
-    "title": "Economic_Model",
-    "section": "F.O.C. 2",
-    "text": "F.O.C. 2\n\\[\n\\frac{dSW}{dq} = 1-q-kq-dq =0\n\\]\n\\[\nq^0 = \\frac{1}{1+k+d}\n\\]"
-  },
-  {
-    "objectID": "Economic_.html#f.o.c.-3",
-    "href": "Economic_.html#f.o.c.-3",
-    "title": "Economic_Model",
-    "section": "F.O.C. 3",
-    "text": "F.O.C. 3\n\\[\n\\frac{d\\pi}{dq} = 1-2q-kq-\\tau = 0\n\\]\n\\[\n\\frac{1-\\tau}{2+k} = q^m\n\\]\n\nCompetitive firm optimal level with tax\n\\[\nmax_q \\ \\pi^c = pq-\\frac{k}{2}q^2-\\tau q\\\n\\]"
-  },
-  {
-    "objectID": "Economic_.html#f.o.c.-4",
-    "href": "Economic_.html#f.o.c.-4",
-    "title": "Economic_Model",
-    "section": "F.O.C. 4",
-    "text": "F.O.C. 4\n\\[\n\\frac{d\\pi^c}{dq}=p-kq-\\tau=0\n\\]\n\\[\np=kq+\\tau\n\\]\nSince the competitive firm is the price taker we must assume an individual’s utility function that is representative of the market.\n\\[\nmax_q \\ U = Y - pq\\ + \\frac{1}{2}q\\ (2-q)\n\\]"
-  },
-  {
-    "objectID": "Economic_.html#f.o.c.-5",
-    "href": "Economic_.html#f.o.c.-5",
-    "title": "Economic_Model",
-    "section": "F.O.C. 5",
-    "text": "F.O.C. 5\n\\[\n\\frac{dU}{dq} = -p \\ + 1-q =0\n\\]\n\\[\np=1-q\n\\]\nNow that we have derived the supply and demand function we can set them equal to each other to find the market equilibrium quantity of q.\n\nMarket Equilibrium\n\\[\nkq+\\tau = 1-q\n\\]\n\\[\nq^c = \\frac{1-\\tau}{k+1}\n\\]\nThe optimal quantity of q with the tax is greater for the competitive firm than for the monopolistic firm.\n\\[\nq^c &gt; q^m\n\\]"
   },
   {
     "objectID": "Economic_.html#cost-function",
@@ -406,6 +385,90 @@
     "text": "F.O.C. 1\n\\[\n\\frac{dSW}{dq} = 1-q(1+k+d)=0\n\\]\n\\[\nq^o = \\frac{1}{1+k+d}\n\\]"
   },
   {
+    "objectID": "Economic_.html#f.o.c.-2",
+    "href": "Economic_.html#f.o.c.-2",
+    "title": "Economic_Model",
+    "section": "F.O.C. 2",
+    "text": "F.O.C. 2\n\\[\n\\frac{dSW}{dq} = 1-q-kq-dq =0\n\\]\n\\[\nq^0 = \\frac{1}{1+k+d}\n\\]"
+  },
+  {
+    "objectID": "Economic_.html#f.o.c.-3",
+    "href": "Economic_.html#f.o.c.-3",
+    "title": "Economic_Model",
+    "section": "F.O.C. 3",
+    "text": "F.O.C. 3\n\\[\n\\frac{d\\pi}{dq} = 1-2q-kq-\\tau = 0\n\\]\n\\[\n\\frac{1-\\tau}{2+k} = q^m\n\\]\n\nCompetitive firm optimal level with tax\n\\[\nmax_q \\ \\pi^c = pq-\\frac{k}{2}q^2-\\tau q\\\n\\]"
+  },
+  {
+    "objectID": "Economic_.html#f.o.c.-4",
+    "href": "Economic_.html#f.o.c.-4",
+    "title": "Economic_Model",
+    "section": "F.O.C. 4",
+    "text": "F.O.C. 4\n\\[\n\\frac{d\\pi^c}{dq}=p-kq-\\tau=0\n\\]\n\\[\np=kq+\\tau\n\\]\nSince the competitive firm is the price taker we must assume an individual’s utility function that is representative of the market.\n\\[\nmax_q \\ U = Y - pq\\ + \\frac{1}{2}q\\ (2-q)\n\\]"
+  },
+  {
+    "objectID": "Economic_.html#f.o.c.-5",
+    "href": "Economic_.html#f.o.c.-5",
+    "title": "Economic_Model",
+    "section": "F.O.C. 5",
+    "text": "F.O.C. 5\n\\[\n\\frac{dU}{dq} = -p \\ + 1-q =0\n\\]\n\\[\np=1-q\n\\]\nNow that we have derived the supply and demand function we can set them equal to each other to find the market equilibrium quantity of q.\n\nMarket Equilibrium\n\\[\nkq+\\tau = 1-q\n\\]\n\\[\nq^c = \\frac{1-\\tau}{k+1}\n\\]\nThe optimal quantity of q with the tax is greater for the competitive firm than for the monopolistic firm.\n\\[\nq^c &gt; q^m\n\\]"
+  },
+  {
+    "objectID": "blog-listing.html",
+    "href": "blog-listing.html",
+    "title": "DANL200 Homework",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n  \n\n\n\n\nSpotify Artist Dataset\n\n\n\n\n\n\n\n\n\n2 min\n\n\n\n\n\n\n  \n\n\n\n\nRestaurant Inspection Data\n\n\n\n\n\n\n\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html",
+    "href": "danl-210-quarto-py-only.html",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "",
+    "text": "reticulate::use_condaenv(\"/Users/bchoe/anaconda3\", required = TRUE)"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html#variables-and-data-types",
+    "href": "danl-210-quarto-py-only.html#variables-and-data-types",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.1 Variables and Data Types",
+    "text": "1.1 Variables and Data Types\nIn Python, variables can store data of different types without explicitly declaring the type.\nFor example:\n\n\nCode\ninteger_variable = 10\nstring_variable = 'Hello'\nfloat_variable = 10.5\n\nfloat_variable\n\n\n10.5"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html#control-structures",
+    "href": "danl-210-quarto-py-only.html#control-structures",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.2 Control Structures",
+    "text": "1.2 Control Structures\nPython supports the usual logical conditions from mathematics:\n\n\nCode\n# Equals: a == b\n# Not Equals: a != b\n# Less than: a &lt; b\n# Less than or equal to: a &lt;= b\n# Greater than: a &gt; b\n# Greater than or equal to: a &gt;= b\n\n\nThese conditions can be used in several ways, most commonly in ‘if statements’ and loops.\n\n\nCode\n# if statement:\nif 5 &gt; 2:\n    print('Five is greater than two!')\n\n\nFive is greater than two!"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html#functions",
+    "href": "danl-210-quarto-py-only.html#functions",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.3 Functions",
+    "text": "1.3 Functions\nA function is a block of code which only runs when it is called.\nYou can pass data, known as parameters, into a function.\nA function can return data as a result.\n\n\nCode\n# Defining a function:\ndef my_function():\n    print('Hello from a function')\n\n# Calling a function:\nmy_function()\n\n\nHello from a function"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html#lists-and-dictionaries",
+    "href": "danl-210-quarto-py-only.html#lists-and-dictionaries",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "1.4 Lists and Dictionaries",
+    "text": "1.4 Lists and Dictionaries\nA list is a collection which is ordered and changeable.\nA dictionary is a collection which is unordered, changeable and indexed.\n\n\nCode\n# List example:\nmy_list = ['apple', 'banana', 'cherry']\n\n# Dictionary example:\nmy_dict = {'name': 'John', 'age': 36}"
+  },
+  {
+    "objectID": "danl-210-quarto-py-only.html#import-python-libraries",
+    "href": "danl-210-quarto-py-only.html#import-python-libraries",
+    "title": "DANL 210: Data Preparation and Management",
+    "section": "2.1 Import Python libraries",
+    "text": "2.1 Import Python libraries\n\n\nCode\nimport pandas as pd\n\n\n\n\nCode\noj = pd.read_csv('https://bcdanl.github.io/data/dominick_oj.csv')\n\n\n\n\nCode!\noj\n\n\n\n\n\n\n\n\n\nsales\nprice\nbrand\nad\n\n\n\n\n0\n8256.0\n3.87\ntropicana\n0\n\n\n1\n6144.0\n3.87\ntropicana\n0\n\n\n2\n3840.0\n3.87\ntropicana\n0\n\n\n3\n8000.0\n3.87\ntropicana\n0\n\n\n4\n8896.0\n3.87\ntropicana\n0\n\n\n...\n...\n...\n...\n...\n\n\n28942\n2944.0\n2.00\ndominicks\n0\n\n\n28943\n4928.0\n1.94\ndominicks\n0\n\n\n28944\n13440.0\n1.59\ndominicks\n0\n\n\n28945\n55680.0\n1.49\ndominicks\n0\n\n\n28946\n7040.0\n1.75\ndominicks\n0\n\n\n\n\n28947 rows × 4 columns\n\n\n\n\n\nCode\noj.describe()\n\n\n\n\n\n\n\n\n\nsales\nprice\nad\n\n\n\n\ncount\n28947.000000\n28947.000000\n28947.000000\n\n\nmean\n17312.213356\n2.282488\n0.237261\n\n\nstd\n27477.660437\n0.648001\n0.425411\n\n\nmin\n64.000000\n0.520000\n0.000000\n\n\n25%\n4864.000000\n1.790000\n0.000000\n\n\n50%\n8384.000000\n2.170000\n0.000000\n\n\n75%\n17408.000000\n2.730000\n0.000000\n\n\nmax\n716416.000100\n3.870000\n1.000000\n\n\n\n\n\n\n\n\n2.1.1 Interactive DataFrame with itables library\nIn *.ipynb on Google Colab, we can use itables or just Google Colab’s default to print DataFrame.\n\n\nCode\n !pip install itables\nfrom itables import init_notebook_mode, show\ninit_notebook_mode(all_interactive=False)\n\nshow(oj)\n\n\nRequirement already satisfied: itables in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (1.6.3)\nRequirement already satisfied: IPython in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from itables) (8.15.0)\nRequirement already satisfied: pandas in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from itables) (2.0.3)\nRequirement already satisfied: numpy in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from itables) (1.24.3)\nRequirement already satisfied: backcall in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.2.0)\nRequirement already satisfied: decorator in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (5.1.1)\nRequirement already satisfied: jedi&gt;=0.16 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.18.1)\nRequirement already satisfied: matplotlib-inline in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.1.6)\nRequirement already satisfied: pickleshare in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.7.5)\nRequirement already satisfied: prompt-toolkit!=3.0.37,&lt;3.1.0,&gt;=3.0.30 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (3.0.36)\nRequirement already satisfied: pygments&gt;=2.4.0 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (2.15.1)\nRequirement already satisfied: stack-data in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.2.0)\nRequirement already satisfied: traitlets&gt;=5 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (5.7.1)\nRequirement already satisfied: pexpect&gt;4.3 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (4.8.0)\nRequirement already satisfied: appnope in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from IPython-&gt;itables) (0.1.2)\nRequirement already satisfied: python-dateutil&gt;=2.8.2 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from pandas-&gt;itables) (2.8.2)\nRequirement already satisfied: pytz&gt;=2020.1 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from pandas-&gt;itables) (2023.3.post1)\nRequirement already satisfied: tzdata&gt;=2022.1 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from pandas-&gt;itables) (2023.3)\nRequirement already satisfied: parso&lt;0.9.0,&gt;=0.8.0 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from jedi&gt;=0.16-&gt;IPython-&gt;itables) (0.8.3)\nRequirement already satisfied: ptyprocess&gt;=0.5 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from pexpect&gt;4.3-&gt;IPython-&gt;itables) (0.7.0)\nRequirement already satisfied: wcwidth in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from prompt-toolkit!=3.0.37,&lt;3.1.0,&gt;=3.0.30-&gt;IPython-&gt;itables) (0.2.5)\nRequirement already satisfied: six&gt;=1.5 in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas-&gt;itables) (1.16.0)\nRequirement already satisfied: executing in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from stack-data-&gt;IPython-&gt;itables) (0.8.3)\nRequirement already satisfied: asttokens in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from stack-data-&gt;IPython-&gt;itables) (2.0.5)\nRequirement already satisfied: pure-eval in /Users/jackkatz/anaconda3/lib/python3.11/site-packages (from stack-data-&gt;IPython-&gt;itables) (0.2.2)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsales\nprice\nbrand\nad\n\n\n\n\nLoading... (need help?)"
+  },
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "DANL-200 Final Project",
+    "section": "",
+    "text": "About this project:\nThe purpose of our project is to analyze a basket of ten stocks from the years 2013-2023. Through our analysis we make a stock recommendation for two different types of investors: A long-term and Short-term investor. We do this by analyzing changes in stock price, volatility and correlation between the different stock price movements over time."
+  },
+  {
     "objectID": "project.html#loading-in-data",
     "href": "project.html#loading-in-data",
     "title": "DANL-200 Final Project",
@@ -413,10 +476,10 @@
     "text": "2.1 Loading in Data\n\nStock_data &lt;- read.csv(\"/Users/jackkatz/Downloads/data.csv\")\n\nhead(Stock_data)\n\n  Company       Date Close.Last   Volume    Open      High      Low\n1    AAPL 07/17/2023    $193.99 50520160 $191.90   $194.32  $191.81\n2    AAPL 07/14/2023    $190.69 41616240 $190.23 $191.1799  $189.63\n3    AAPL 07/13/2023    $190.54 41342340 $190.50   $191.19  $189.78\n4    AAPL 07-12-2023    $189.77 60750250 $189.68   $191.70  $188.47\n5    AAPL 07-11-2023    $188.08 46638120 $189.16   $189.30  $186.60\n6    AAPL 07-10-2023    $188.61 59922160 $189.26   $189.99 $187.035"
   },
   {
-    "objectID": "Directed_Study.html",
-    "href": "Directed_Study.html",
-    "title": "Directed Study",
-    "section": "",
-    "text": "Loading in Packages\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.4     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ipumsr)\n\n\n\nLoading in data\nThis data set is from the Integrated Public Use Micro data website which provides micro data from United States surveys for research purposes. Below is is code I wrote to clean and analyze the data for undergraduate research I am currently working on.\n\nddi &lt;- read_ipums_ddi(\"usa_00007.xml\")\ndata &lt;- read_ipums_micro(ddi)\n\nUse of data from IPUMS USA is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.\n\n\n\n\nCleaning Data\n\n\nCreating New Variables\n\n\nDescriptive Statistics"
+    "objectID": "project.html#summary-statistics",
+    "href": "project.html#summary-statistics",
+    "title": "DANL-200 Final Project",
+    "section": "2.2 Summary Statistics",
+    "text": "2.2 Summary Statistics\n\nStock_data_clean &lt;- Stock_data %&gt;% \n  mutate(Close.Last.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Close.Last),\n         Open.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Open),\n         High.Numeric = gsub(\"\\\\$\",\"\", Stock_data$High),\n         Low.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Low)) %&gt;% \n  mutate(Close_Last = as.numeric(Close.Last.Numeric),\n         Open_Numeric = as.numeric(Open.Numeric),\n         High_Numeric = as.numeric(High.Numeric),\n         Low_Numeric  = as.numeric(Low.Numeric)) %&gt;% \n  select(Company, Date, Volume, Close_Last:Low_Numeric)\n\nskim(Stock_data_clean)\n\n\nData summary\n\n\nName\nStock_data_clean\n\n\nNumber of rows\n25160\n\n\nNumber of columns\n7\n\n\n_______________________\n\n\n\nColumn type frequency:\n\n\n\ncharacter\n2\n\n\nnumeric\n5\n\n\n________________________\n\n\n\nGroup variables\nNone\n\n\n\nVariable type: character\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmin\nmax\nempty\nn_unique\nwhitespace\n\n\n\n\nCompany\n0\n1\n3\n4\n0\n10\n0\n\n\nDate\n0\n1\n10\n10\n0\n2516\n0\n\n\n\nVariable type: numeric\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmean\nsd\np0\np25\np50\np75\np100\nhist\n\n\n\n\nVolume\n0\n1\n51317642.69\n63991428.71\n1143952.00\n12003942.50\n26720830.00\n68572694.00\n1.065209e+09\n▇▁▁▁▁\n\n\nClose_Last\n0\n1\n102.46\n101.99\n1.62\n36.57\n65.68\n134.24\n6.916900e+02\n▇▂▁▁▁\n\n\nOpen_Numeric\n0\n1\n102.43\n102.00\n1.62\n36.51\n65.65\n134.32\n6.923500e+02\n▇▂▁▁▁\n\n\nHigh_Numeric\n0\n1\n103.83\n103.53\n1.69\n36.89\n66.49\n136.23\n7.009900e+02\n▇▂▁▁▁\n\n\nLow_Numeric\n0\n1\n101.01\n100.40\n1.61\n36.13\n64.92\n132.66\n6.860900e+02\n▇▂▁▁▁"
   }
 ]
