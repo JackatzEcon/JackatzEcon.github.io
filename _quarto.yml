@@ -15,7 +15,7 @@ website:
         menu: 
           - basic_python_intro_(2).ipynb
           - danl-210-quarto-py-only.qmd
-          - danl-210-quarto-reticualte.qmd
+          - danl-210-quarto-reticulate.qmd
         
   page-footer: 
     center: "Powered with GitHub and Quarto<br>© JACK KATZ, 2024"
