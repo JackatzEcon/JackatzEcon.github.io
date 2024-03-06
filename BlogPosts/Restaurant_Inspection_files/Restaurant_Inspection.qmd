@@ -15,9 +15,10 @@ restaurant <- read_csv(
   'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'
 )
 ```
-This dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections.  
 
-## Creating Descriptive Statistics 
+This dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections.
+
+## Creating Descriptive Statistics
 
 ```{r, include=TRUE}
 Q1a <- restaurant %>% 
@@ -29,7 +30,6 @@ Q1a <- restaurant %>%
             MAX_value = max(SCORE))
 ```
 
-
 ### Relationship between Grade and Score
 
 Box plots can show us the relationship between a character variable and a quantitative variable.
@@ -39,7 +39,9 @@ ggplot(data = restaurant)+
   geom_boxplot(mapping = aes(x = GRADE, y = SCORE))
 
 ```
-###Relationship between grade score and critical flag 
+
+###Relationship between grade score and critical flag
+
 ```{r}
 ggplot(data = restaurant)+
   geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))
@@ -62,6 +64,7 @@ Grades <- restaurant %>%
   filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))
 Grades
 ```
+
 ```{r}
 ggplot(data = Grades)+
   geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, 
@@ -69,12 +72,10 @@ ggplot(data = Grades)+
                          group = GRADE,
                          fill = GRADE))
 ```
+
 From this ggplot we can see that donuts have the highest proportion of A grades for health.
 
-
-
-
-### Most popular restaurant type 
+### Most popular restaurant type
 
 ```{r}
 Q1f <- restaurant %>% 
@@ -84,4 +85,3 @@ Q1f <- restaurant %>%
 
 Q1f
 ```
-

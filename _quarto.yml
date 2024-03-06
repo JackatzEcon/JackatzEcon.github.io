@@ -16,6 +16,9 @@ website:
           - basic_python_intro_(2).ipynb
           - danl-210-quarto-py-only.qmd
           - danl-210-quarto-reticulate.qmd
+      -text: Homework Assignments
+       menu: 
+         - Homework2_210_Title.ipynb
         
   page-footer: 
     center: "Powered with GitHub and Quarto<br>© JACK KATZ, 2024"
