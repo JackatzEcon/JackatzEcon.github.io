@@ -481,5 +481,82 @@
     "title": "DANL-200 Final Project",
     "section": "2.2 Summary Statistics",
     "text": "2.2 Summary Statistics\n\nStock_data_clean &lt;- Stock_data %&gt;% \n  mutate(Close.Last.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Close.Last),\n         Open.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Open),\n         High.Numeric = gsub(\"\\\\$\",\"\", Stock_data$High),\n         Low.Numeric = gsub(\"\\\\$\",\"\", Stock_data$Low)) %&gt;% \n  mutate(Close_Last = as.numeric(Close.Last.Numeric),\n         Open_Numeric = as.numeric(Open.Numeric),\n         High_Numeric = as.numeric(High.Numeric),\n         Low_Numeric  = as.numeric(Low.Numeric)) %&gt;% \n  select(Company, Date, Volume, Close_Last:Low_Numeric)\n\nskim(Stock_data_clean)\n\n\nData summary\n\n\nName\nStock_data_clean\n\n\nNumber of rows\n25160\n\n\nNumber of columns\n7\n\n\n_______________________\n\n\n\nColumn type frequency:\n\n\n\ncharacter\n2\n\n\nnumeric\n5\n\n\n________________________\n\n\n\nGroup variables\nNone\n\n\n\nVariable type: character\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmin\nmax\nempty\nn_unique\nwhitespace\n\n\n\n\nCompany\n0\n1\n3\n4\n0\n10\n0\n\n\nDate\n0\n1\n10\n10\n0\n2516\n0\n\n\n\nVariable type: numeric\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmean\nsd\np0\np25\np50\np75\np100\nhist\n\n\n\n\nVolume\n0\n1\n51317642.69\n63991428.71\n1143952.00\n12003942.50\n26720830.00\n68572694.00\n1.065209e+09\n▇▁▁▁▁\n\n\nClose_Last\n0\n1\n102.46\n101.99\n1.62\n36.57\n65.68\n134.24\n6.916900e+02\n▇▂▁▁▁\n\n\nOpen_Numeric\n0\n1\n102.43\n102.00\n1.62\n36.51\n65.65\n134.32\n6.923500e+02\n▇▂▁▁▁\n\n\nHigh_Numeric\n0\n1\n103.83\n103.53\n1.69\n36.89\n66.49\n136.23\n7.009900e+02\n▇▂▁▁▁\n\n\nLow_Numeric\n0\n1\n101.01\n100.40\n1.61\n36.13\n64.92\n132.66\n6.860900e+02\n▇▂▁▁▁"
+  },
+  {
+    "objectID": "Homework2_210_Title.html",
+    "href": "Homework2_210_Title.html",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "",
+    "text": "#— #title: Homework 2 #author: Jack Katz #—\nimport pandas as pd\nspotify = pd.read_csv('https://bcdanl.github.io/data/spotify_all.csv')\nThe Beatles were a revolutionary Rock n’ Roll group that were active throughout the 1960’s and 70’s. In their early years they brought together blues and rock n’ roll style with the modern form of the four man rock band. Over the groups career they each developed their own styles and sounds as musicians which then influenced there individual solo careers. Although each of them are talented in their own way they all received varying levels of commercial and critical success. This data analysis takes a look at how each members popularity stands today among modern listeners."
+  },
+  {
+    "objectID": "Homework2_210_Title.html#the-data",
+    "href": "Homework2_210_Title.html#the-data",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "The Data",
+    "text": "The Data\nThe code below uses filtering methods and the isin function to narrow down the data set to just the individual music of each artist\n\nArtists = [\"Paul McCartney\", \"John Lennon\" , \"Ringo Starr\", \"George Harrison\" ]\n\nBeatles = spotify[\"artist_name\"].isin(Artists)\n\nIndividual_Beatles = spotify[Beatles]\n\nIndividual_Beatles.nunique()\n\n\n\n\n\npid              59\nplaylist_name    58\npos              75\nartist_name       4\ntrack_name       50\nduration_ms      50\nalbum_name       31\ndtype: int64"
+  },
+  {
+    "objectID": "Homework2_210_Title.html#data-manipulation-and-approach",
+    "href": "Homework2_210_Title.html#data-manipulation-and-approach",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "Data manipulation and Approach",
+    "text": "Data manipulation and Approach\nMy technique involves filtering the data for each Beatle to then find statistics on, amount of minutes each is listened to, and their individual representation within the dataset. The metric I will be using to determine popularity is amount of playlists they appear in and how many songs they have in the entire dataset.\n\nPaul\nPaul was the bassist for the Beatles and one of the main singers and songwriters. He is known for his signature lefty bass playing.\n\nPaul = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Paul McCartney\"]\n)\n\nPaul.count()\n\npid              44\nplaylist_name    44\npos              44\ntrack_name       44\nduration_ms      44\nalbum_name       44\ndtype: int64\n\n\n\nPaul[\"pid\"].nunique()\n\n30\n\n\n\n\nGeorge\nGeorge was the lead Guitarist of the group and was known for his simple yet elegant solos and fills.\n\nGeorge = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"George Harrison\"]\n)\n\nGeorge.count()\n\npid              27\nplaylist_name    27\npos              27\ntrack_name       27\nduration_ms      27\nalbum_name       27\ndtype: int64\n\n\n\nGeorge[\"pid\"].nunique()\n\n18\n\n\n\n\nRingo\nRingo was the groups drummer. He was known for his quirky song writing and goofy personality.\n\nRingo = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Ringo Starr\"]\n)\n\nRingo.count()\n\npid              5\nplaylist_name    5\npos              5\ntrack_name       5\nduration_ms      5\nalbum_name       5\ndtype: int64\n\n\n\nRingo[\"pid\"].nunique()\n\n2\n\n\n\n\nJohn\nJohn was the rythm guitarist and wrote many of the groups most popular songs.\n\nJohn = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"John Lennon\"]\n)\n\nJohn.count()\n\npid              32\nplaylist_name    32\npos              32\ntrack_name       32\nduration_ms      32\nalbum_name       32\ndtype: int64\n\n\n\nJohn[\"pid\"].nunique()\n\n26"
+  },
+  {
+    "objectID": "Homework2_210_Title.html#conclusion",
+    "href": "Homework2_210_Title.html#conclusion",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "Conclusion",
+    "text": "Conclusion\nPaul has the highest popularity with 44 songs on 30 datasets. Ringo has the lowest with 2 songs spread over 5 playlists. John was the second most popular with 32 songs in 26 playlists and George was the third with 27 songs over 18 playlists. These results can be attributed to a number of factors. For exampl, Paul is still alive releasing new music while George and John passed away while they were still making new albums. Another reason is due to overall style. George, John, and Ringo produced eclectic music that appealed to more niche groups of people while Paul released more widely accepted music."
+  },
+  {
+    "objectID": "Homework2_210.html",
+    "href": "Homework2_210.html",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "",
+    "text": "import pandas as pd\nspotify = pd.read_csv('https://bcdanl.github.io/data/spotify_all.csv')\nThe Beatles were a revolutionary Rock n’ Roll group that were active throughout the 1960’s and 70’s. In their early years they brought together blues and rock n’ roll style with the modern form of the four man rock band. Over the groups career they each developed their own styles and sounds as musicians which then influenced there individual solo careers. Although each of them are talented in their own way they all received varying levels of commercial and critical success. This data analysis takes a look at how each members popularity stands today among modern listeners."
+  },
+  {
+    "objectID": "Homework2_210.html#the-data",
+    "href": "Homework2_210.html#the-data",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "The Data",
+    "text": "The Data\nThe code below uses filtering methods and the isin function to narrow down the data set to just the individual music of each artist\n\nArtists = [\"Paul McCartney\", \"John Lennon\" , \"Ringo Starr\", \"George Harrison\" ]\n\nBeatles = spotify[\"artist_name\"].isin(Artists)\n\nIndividual_Beatles = spotify[Beatles]\n\nIndividual_Beatles.nunique()\n\n\n\n\n\npid              59\nplaylist_name    58\npos              75\nartist_name       4\ntrack_name       50\nduration_ms      50\nalbum_name       31\ndtype: int64"
+  },
+  {
+    "objectID": "Homework2_210.html#data-manipulation-and-approach",
+    "href": "Homework2_210.html#data-manipulation-and-approach",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "Data manipulation and Approach",
+    "text": "Data manipulation and Approach\nMy technique involves filtering the data for each Beatle to then find statistics on, amount of minutes each is listened to, and their individual representation within the dataset. The metric I will be using to determine popularity is amount of playlists they appear in and how many songs they have in the entire dataset.\n\nPaul\nPaul was the bassist for the Beatles and one of the main singers and songwriters. He is known for his signature lefty bass playing.\n\nPaul = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Paul McCartney\"]\n)\n\nPaul.count()\n\npid              44\nplaylist_name    44\npos              44\ntrack_name       44\nduration_ms      44\nalbum_name       44\ndtype: int64\n\n\n\nPaul[\"pid\"].nunique()\n\n30\n\n\n\n\nGeorge\nGeorge was the lead Guitarist of the group and was known for his simple yet elegant solos and fills.\n\nGeorge = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"George Harrison\"]\n)\n\nGeorge.count()\n\npid              27\nplaylist_name    27\npos              27\ntrack_name       27\nduration_ms      27\nalbum_name       27\ndtype: int64\n\n\n\nGeorge[\"pid\"].nunique()\n\n18\n\n\n\n\nRingo\nRingo was the groups drummer. He was known for his quirky song writing and goofy personality.\n\nRingo = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Ringo Starr\"]\n)\n\nRingo.count()\n\npid              5\nplaylist_name    5\npos              5\ntrack_name       5\nduration_ms      5\nalbum_name       5\ndtype: int64\n\n\n\nRingo[\"pid\"].nunique()\n\n2\n\n\n\n\nJohn\nJohn was the rythm guitarist and wrote many of the groups most popular songs.\n\nJohn = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"John Lennon\"]\n)\n\nJohn.count()\n\npid              32\nplaylist_name    32\npos              32\ntrack_name       32\nduration_ms      32\nalbum_name       32\ndtype: int64\n\n\n\nJohn[\"pid\"].nunique()\n\n26"
+  },
+  {
+    "objectID": "Homework2_210.html#conclusion",
+    "href": "Homework2_210.html#conclusion",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "Conclusion",
+    "text": "Conclusion\nPaul has the highest popularity with 44 songs on 30 datasets. Ringo has the lowest with 2 songs spread over 5 playlists. John was the second most popular with 32 songs in 26 playlists and George was the third with 27 songs over 18 playlists. These results can be attributed to a number of factors. For exampl, Paul is still alive releasing new music while George and John passed away while they were still making new albums. Another reason is due to overall style. George, John, and Ringo produced eclectic music that appealed to more niche groups of people while Paul released more widely accepted music."
+  },
+  {
+    "objectID": "Homework2.html",
+    "href": "Homework2.html",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "",
+    "text": "import pandas as pd\nspotify = pd.read_csv('https://bcdanl.github.io/data/spotify_all.csv')\nThe Beatles were a revolutionary Rock n’ Roll group that were active throughout the 1960’s and 70’s. In their early years they brought together blues and rock n’ roll style with the modern form of the four man rock band. Over the groups career they each developed their own styles and sounds as musicians which then influenced there individual solo careers. Although each of them are talented in their own way they all received varying levels of commercial and critical success. This data analysis takes a look at how each members popularity stands today among modern listeners."
+  },
+  {
+    "objectID": "Homework2.html#the-data",
+    "href": "Homework2.html#the-data",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "The Data",
+    "text": "The Data\nThe code below uses filtering methods and the isin function to narrow down the data set to just the individual music of each artist\n\nArtists = [\"Paul McCartney\", \"John Lennon\" , \"Ringo Starr\", \"George Harrison\" ]\n\nBeatles = spotify[\"artist_name\"].isin(Artists)\n\nIndividual_Beatles = spotify[Beatles]\n\nIndividual_Beatles.nunique()\n\n\n\n\n\npid              59\nplaylist_name    58\npos              75\nartist_name       4\ntrack_name       50\nduration_ms      50\nalbum_name       31\ndtype: int64"
+  },
+  {
+    "objectID": "Homework2.html#data-manipulation-and-approach",
+    "href": "Homework2.html#data-manipulation-and-approach",
+    "title": "The Fab Four: An Exploration of the Beatles Solo Careers Through Data",
+    "section": "Data manipulation and Approach",
+    "text": "Data manipulation and Approach\nMy technique involves filtering the data for each Beatle to then find statistics on, amount of minutes each is listened to, and their individual representation within the dataset. The metric I will be using to determine popularity is amount of playlists they appear in and how many songs they have in the entire dataset.\n\nPaul\nPaul was the bassist for the Beatles and one of the main singers and songwriters. He is known for his signature lefty bass playing.\n\nPaul = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Paul McCartney\"]\n)\n\nPaul.count()\n\npid              44\nplaylist_name    44\npos              44\ntrack_name       44\nduration_ms      44\nalbum_name       44\ndtype: int64\n\n\n\nPaul[\"pid\"].nunique()\n\n30\n\n\n\n\nGeorge\nGeorge was the lead Guitarist of the group and was known for his simple yet elegant solos and fills.\n\nGeorge = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"George Harrison\"]\n)\n\nGeorge.count()\n\npid              27\nplaylist_name    27\npos              27\ntrack_name       27\nduration_ms      27\nalbum_name       27\ndtype: int64\n\n\n\nGeorge[\"pid\"].nunique()\n\n18\n\n\n\n\nRingo\nRingo was the groups drummer. He was known for his quirky song writing and goofy personality.\n\nRingo = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"Ringo Starr\"]\n)\n\nRingo.count()\n\npid              5\nplaylist_name    5\npos              5\ntrack_name       5\nduration_ms      5\nalbum_name       5\ndtype: int64\n\n\n\nRingo[\"pid\"].nunique()\n\n2\n\n\n\n\nJohn\nJohn was the rythm guitarist and wrote many of the groups most popular songs.\n\nJohn = (\n    Individual_Beatles\n        .set_index(\"artist_name\")\n        .loc[\"John Lennon\"]\n)\n\nJohn.count()\n\npid              32\nplaylist_name    32\npos              32\ntrack_name       32\nduration_ms      32\nalbum_name       32\ndtype: int64\n\n\n\nJohn[\"pid\"].nunique()\n\n26"
   }
 ]
