@@ -1,0 +1,80 @@
+---
+title: "Spotify Artist Dataset"
+editor: visual
+about: 
+  template: trestles
+  image: Drake.png
+  image-shape: round
+  image-width: 15em 
+---
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(ggthemes)
+```
+
+## Loading in Data set
+
+```{r}
+spotify_all <- read_csv('https://bcdanl.github.io/data/spotify_all.csv')
+spotify_all
+```
+
+## The Artists for the Ten Most Popular Songs
+
+```{r}
+Q1a <- spotify_all %>% 
+  arrange(-`duration_ms`) %>% 
+  filter(playlist_name != "Audiobooks") %>% 
+  slice_head(n = 10) %>% 
+  select(`artist_name`)
+
+Q1a
+```
+
+## The Five Most Common Artists in the Data Frame 🧑‍🎨
+
+```{r}
+Q1b <- spotify_all %>% 
+  group_by(`artist_name`) %>% 
+  summarise(count = n()) %>% 
+  arrange(-count) %>% 
+  slice_head(n = 5)
+
+Q1b
+```
+
+```{r}
+ggplot(data = Q1b)+
+  geom_col(mapping = aes(x = artist_name,
+                             y = count,
+           color = artist_name))
+```
+
+As we can see Drake is very Popular 🎵
+
+### Most popular songs by each of the 5 most popular artists
+
+```{r}
+Q1b2 <- spotify_all %>% 
+  group_by(`track_name`, `artist_name`) %>%
+  filter(`artist_name` %in% Q1b$artist_name) %>% 
+  summarise(po_song = n()) %>% 
+  arrange(-po_song)
+
+answer <- Q1b2 %>% 
+  group_by(`artist_name`) %>% 
+  filter(po_song == max(po_song)) %>% 
+  unite(Name_and_Track, track_name, artist_name, sep = ",")
+
+answer
+```
+
+```{r}
+ggplot(data = answer)+
+  geom_col(mapping = aes(x = Name_and_Track,
+                         y = po_song,
+  color = Name_and_Track))+
+ylab("Song Occurences")
+```

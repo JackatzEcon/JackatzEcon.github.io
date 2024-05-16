@@ -1,0 +1,71 @@
+---
+title: "Stock Volatility"
+editor: visual
+---
+
+```{r}
+#loading packages
+library(tidyverse)
+library(tidyselect)
+library(skimr)
+library(ggthemes)
+```
+
+```{r}
+# loading data
+Stock_data <- read.csv("/Users/jackkatz/Downloads/data.csv")
+```
+
+# Stock Volatility
+
+An easy way to study stock volatility of a stock or index is to find the standard deviation of of the prices over a time period. This tells us how far the prices are from the mean price. Our dataset includes 10 years of data for each stock so we calculated the historical volatility for each stock for each year.
+
+```{r}
+#Cleaning data
+Stock_data_clean <- Stock_data %>% 
+  mutate(Close.Last.Numeric = gsub("\\$","", Stock_data$Close.Last),
+         Open.Numeric = gsub("\\$","", Stock_data$Open),
+         Open.Numeric = gsub("\\$","", Stock_data$Open),
+         High.Numeric = gsub("\\$","", Stock_data$High),
+         Low.Numeric = gsub("\\$","", Stock_data$Low)) %>% 
+  select(Company, Date, Volume, Close.Last.Numeric:Low.Numeric)
+
+head(Stock_data_clean, n = 10)
+
+```
+
+This code removes the dollar signs from the original dataset so that the prices can be analyzed as numeric variables.
+
+## Calculating Volatility
+
+By separating the month and day from the year and creating a new variable, we can group the data set by Year and Company and find the standard deviations from Close.Last.Numeric.
+
+```{r}
+Volatility_analysis <- Stock_data_clean %>% 
+  separate(Date, into = c("Month/Day","Year"), sep = 6 )
+
+head(Volatility_analysis, n = 10)
+```
+
+```{r}
+Historical_Volatility <- Volatility_analysis %>% 
+  group_by(Company, Year) %>% 
+  summarise(Volatility = sd(Close.Last.Numeric))
+
+head(Historical_Volatility, n = 10)
+```
+
+From this dataset we then used ggplot to show each companies volatility from 2013-2023
+
+```{r}
+ggplot(Historical_Volatility,
+       mapping = aes(x = Year,
+                     y = Volatility),
+       grouping = 1)+
+  geom_point()+
+  facet_wrap( . ~Company)+
+  theme_economist_white()
+
+```
+
+From here we can now see how the volatility changes. Other than CSCO and SBUX the collection of stocks has an increase in volatility over time. The increase happens for most companies around 2020. According to the graphs the most volaitle companies are NFLX, TSLA, and META.

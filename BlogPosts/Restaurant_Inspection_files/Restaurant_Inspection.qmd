@@ -1,0 +1,92 @@
+---
+title: "Restaurant Inspection Data"
+editor: visual
+about: 
+  template: trestles
+  image: Drake.png
+  image-shape: round
+  image-width: 15em
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(skimr)
+```
+
+## Loading in Data
+
+```{r}
+restaurant <- read_csv(
+  'https://bcdanl.github.io/data/DOHMH_NYC_Restaurant_Inspection.csv'
+)
+```
+
+This dataset has 17633 observations and 12 variables. It contains information on health and hygiene rankings. Each restaurant has information about location, type of cuisine and performance on health inspections.
+
+## Creating Descriptive Statistics
+
+```{r, include=TRUE}
+Q1a <- restaurant %>% 
+  group_by(GRADE) %>% 
+  summarise(SD_value = sd(SCORE),
+            first_quartile = quantile(SCORE, 0.25),
+            median_value = median(SCORE),
+            third_quartile = quantile(SCORE, .75),
+            MAX_value = max(SCORE))
+```
+
+### Relationship between Grade and Score
+
+Box plots can show us the relationship between a character variable and a quantitative variable.
+
+```{r}
+ggplot(data = restaurant)+
+  geom_boxplot(mapping = aes(x = GRADE, y = SCORE))
+
+```
+
+###Relationship between grade score and critical flag
+
+```{r}
+ggplot(data = restaurant)+
+  geom_boxplot(mapping = aes(x = `CRITICAL FLAG`, y = SCORE))
+```
+
+### In this ggplot graph we can see which `Cuisine Description` has the highest proportion of Grade A rankings
+
+```{r}
+Q1e <- restaurant %>% 
+  group_by(`CUISINE DESCRIPTION`) %>% 
+  summarise(count = n()) %>% 
+  arrange(-count) %>% 
+  head(n = 10)
+
+Q1e
+```
+
+```{r}
+Grades <- restaurant %>% 
+  filter(`CUISINE DESCRIPTION` %in% c(Q1e$`CUISINE DESCRIPTION`))
+Grades
+```
+
+```{r}
+ggplot(data = Grades)+
+  geom_bar(mapping = aes(x = `CUISINE DESCRIPTION`, 
+                         y = after_stat(prop),
+                         group = GRADE,
+                         fill = GRADE))
+```
+
+From this ggplot we can see that donuts have the highest proportion of A grades for health.
+
+### Most popular restaurant type
+
+```{r}
+Q1f <- restaurant %>% 
+  group_by(`DBA`) %>% 
+  summarise(count = n()) %>%   
+  arrange(desc(count))
+
+Q1f
+```

@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: "."
+
+website:
+  title: "Jack Katz"
+  navbar:
+    pinned: true
+    left:
+      - text: Project
+        href: project.qmd
+      - text: Blog
+        href: blog-listing.qmd
+      - text: Python Data Analysis
+        menu: 
+          - basic_python_intro_(2).ipynb
+          - danl-210-quarto-py-only.qmd
+          - danl-210-quarto-reticulate.qmd
+     
+  page-footer: 
+    center: "Powered with GitHub and Quarto<br>© JACK KATZ, 2024"
+
+format:
+  html:
+    theme: 
+      light: paper
+      dark: darkly
+    mainfont: system-ui; 
+    highlight-style: atom-one
+    css: styles.css
+    toc: false
+    include-after-body: target_blank.html
+    

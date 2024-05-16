@@ -1,0 +1,186 @@
+---
+title: "Economic_Model"
+editor: visual
+---
+
+PFAS producing firm is either a monopoly or a competitive firm. How do the optimal quantities of the PFAS product differ for each type of firm? How does the tax rate differ for each firm?
+
+## Cost function
+
+$$
+\frac{k}{2}q^2
+$$
+
+## External Damage function
+
+$$
+\frac{d}{2}q^2
+$$
+
+## Demand Function
+
+$$
+(1-q)
+$$
+
+# Task 1
+
+### Find the socially optimal level of output for a monopolist firm
+
+$$
+max_q\  SW = \int_{0}^{q} (1-\theta)d\theta - \frac{k}{2}q^2 - \frac{d}{2}q^2 \\
+= \theta - \frac{1}{2}\theta^2 \Bigr]^q_0
+$$
+
+$$
+= q-\frac{1}{2}q^2-(\frac{k}{2}q^2+\frac{d}{2}q^2)
+$$
+
+## F.O.C. 1
+
+$$
+\frac{dSW}{dq} = 1-q(1+k+d)=0
+$$
+
+$$
+q^o = \frac{1}{1+k+d}
+$$
+
+# Task 1 Continued
+
+### Find the socially optimal level of output for a monopolist firm
+
+$$
+max_q\  SW = U + \pi - D \\
+= Y + q-\frac{1}{2}q^2-\frac{k}{2}q^2-\frac{d}{2}q^2
+$$
+
+## F.O.C. 2
+
+$$
+\frac{dSW}{dq} = 1-q-kq-dq =0
+$$
+
+$$
+q^0 = \frac{1}{1+k+d}
+$$
+
+# Task 2
+
+### Monopolistic firm optimal level with tax
+
+Since the monopolistic firm is not a price taker they produce the amount where MC=MR but set the price at quantity demanded. So, the revenue is (Demand)(quantity).
+
+$$
+max_q \ \pi^m = (1-q)q - \frac{k}{2}q^2-\tau q
+$$
+
+## F.O.C. 3
+
+$$
+\frac{d\pi}{dq} = 1-2q-kq-\tau = 0
+$$
+
+$$
+\frac{1-\tau}{2+k} = q^m
+$$
+
+### Competitive firm optimal level with tax
+
+$$
+max_q \ \pi^c = pq-\frac{k}{2}q^2-\tau q\
+$$
+
+## F.O.C. 4
+
+$$
+\frac{d\pi^c}{dq}=p-kq-\tau=0
+$$
+
+$$
+p=kq+\tau
+$$
+
+Since the competitive firm is the price taker we must assume an individual's utility function that is representative of the market.
+
+$$
+max_q \ U = Y - pq\ + \frac{1}{2}q\ (2-q)
+$$
+
+## F.O.C. 5
+
+$$
+\frac{dU}{dq} = -p \ + 1-q =0 
+$$
+
+$$
+p=1-q
+$$
+
+Now that we have derived the supply and demand function we can set them equal to each other to find the market equilibrium quantity of q.
+
+#### Market Equilibrium
+
+$$
+kq+\tau = 1-q
+$$
+
+$$
+q^c = \frac{1-\tau}{k+1}
+$$
+
+The optimal quantity of q with the tax is greater for the competitive firm than for the monopolistic firm.
+
+$$
+q^c > q^m 
+$$
+
+# Task 3
+
+Now that we know the optimal level of q for each market structure we can find the optimal tax level to induce each firm to produce at the socially optimal level.
+
+### Optimal tax rate for the monopolistic firm
+
+$$
+q^m = q^o
+$$
+
+$$
+q^m = \frac{1-\tau}{2+k} 
+$$
+
+$$
+q^o = \frac{1}{1+k+d}
+$$
+
+$$
+\frac{1-\tau}{2+k} = \frac{1}{1+k+d}
+$$
+
+$$
+\tau^m = \frac{d-1}{1+k+d}
+$$
+
+### Optimal tax rate for the competitive firm
+
+$$
+q^c = q^o
+$$
+
+$$
+q^c = \frac{1-\tau}{1+k} 
+$$
+
+$$
+q^o = \frac{1}{1+k+d}
+$$
+
+$$
+\frac{1-\tau}{1+k} = \frac{1}{1+k+d}
+$$
+
+$$
+\tau^c = \frac{d}{1+k+d}
+$$
+
+The tax rate for the competitive firm is greater than the monopolistic firm.

@@ -1,0 +1,15 @@
+---
+title: "Class-Notes_12-8"
+editor: visual
+---
+
+```{r, include = TRUE}
+df1 <- data.frame(id = 1:3, 
+                  name = c("Alice", "Bob", "Charlie")
+                  )
+df2 <- data.frame(id = 4:6, 
+                  name = c("Dave", "Eve", "Frank")
+                  )
+df_rbind <- rbind(df1, df2)
+df_cbind <- cbind(df1, df2) # better to rename id before cbind()
+```

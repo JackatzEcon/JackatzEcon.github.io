@@ -1,0 +1,25 @@
+---
+title: "Directed Study"
+editor: visual
+---
+
+### Loading in Packages
+
+```{r}
+library(tidyverse)
+library(ipumsr)
+```
+
+### Loading in data
+This data set is from the Integrated Public Use Micro data website which provides micro data from United States surveys for research purposes. Below is is code I wrote to clean and analyze the data for undergraduate research I am currently working on.
+```{r}
+ddi <- read_ipums_ddi("usa_00007.xml")
+data <- read_ipums_micro(ddi)
+```
+
+### Cleaning Data
+
+### Creating New Variables
+
+### Descriptive Statistics 
+

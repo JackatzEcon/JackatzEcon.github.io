@@ -1,0 +1,18 @@
+---
+title: "DANL-200-1129"
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+table1
+table2
+table3
+# Spread across two tibbles
+table4a  # cases
+table4b
+table4a %>% 
+  pivot_longer(cols = c(`1999`, `2000`),
+               names_to = "year",
+               values_to = "cases")
+```
