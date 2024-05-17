@@ -7,8 +7,8 @@ website:
   navbar:
     pinned: true
     left:
-      - text: Project
-        href: project.qmd
+      - text: Final Project
+        href: ESG_Reporting_and_Financial_Analysis.ipynb
       - text: Blog
         href: blog-listing.qmd
       - text: Python Data Analysis
