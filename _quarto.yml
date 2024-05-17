@@ -8,7 +8,7 @@ website:
     pinned: true
     left:
       - text: Final Project
-        href: ESG_Reporting_and_Financial_Analysis.ipynb
+        href: FinalProject.ipynb
       - text: Blog
         href: blog-listing.qmd
       - text: Python Data Analysis
