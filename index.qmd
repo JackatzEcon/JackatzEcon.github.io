@@ -15,7 +15,7 @@ about:
       href: https://github.com/JackatzEcon/JackatzEcon.github.io
     - icon: file-earmark-pdf
       text: Resumé
-      href: Jack.Katz.Resume.pdf
+      href: Resume202411130228.pdf
     - icon: file-earmark-pdf
       text: Economic Research
       href: Katz.English_Proficiency.pdf
